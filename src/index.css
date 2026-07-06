@@ -1,0 +1,71 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "DM Sans", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+
+  --color-surface-950: #070b14;
+  --color-surface-900: #0c1222;
+  --color-surface-800: #121a2e;
+  --color-surface-700: #1a2540;
+  --color-surface-600: #243052;
+
+  --color-accent-400: #38bdf8;
+  --color-accent-500: #0ea5e9;
+  --color-accent-600: #0284c7;
+
+  --color-python-400: #fbbf24;
+  --color-python-500: #f59e0b;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-surface-600) transparent;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply bg-surface-950 text-slate-200 font-sans antialiased;
+}
+
+::selection {
+  @apply bg-accent-500/30 text-white;
+}
+
+.mermaid svg {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  margin: 0 auto;
+}
+
+.mermaid svg text,
+.mermaid svg tspan,
+.mermaid svg .nodeLabel,
+.mermaid svg .label {
+  font-size: 14px !important;
+  font-family: var(--font-sans) !important;
+  fill: #f8fafc !important;
+}
+
+.mermaid svg .edgeLabel text,
+.mermaid svg .edgeLabel tspan {
+  font-size: 12px !important;
+  fill: #e2e8f0 !important;
+}
+
+.mermaid svg .cluster-label text {
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  fill: #94a3b8 !important;
+}
+
+.mermaid svg .node rect,
+.mermaid svg .node circle,
+.mermaid svg .node polygon {
+  stroke-width: 2px;
+}
