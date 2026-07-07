@@ -13,7 +13,16 @@ export function HomePage() {
         </div>
 
         <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {topics.map((topic, index) => (
+          {topics.map((topic, index) => {
+            const accentLabel = topic.accent === 'striver' ? 'striver' : 'python'
+            const accentText =
+              accentLabel === 'striver' ? 'text-striver-400' : 'text-python-400'
+            const accentHover =
+              accentLabel === 'striver' ? 'group-hover:text-striver-400' : 'group-hover:text-python-400'
+            const accentBorder =
+              accentLabel === 'striver' ? 'hover:border-striver-500/40' : 'hover:border-python-500/40'
+
+            return (
             <motion.div
               key={topic.id}
               initial={{ opacity: 0, y: 16 }}
@@ -22,12 +31,12 @@ export function HomePage() {
             >
               <Link
                 to={`/${topic.id}`}
-                className="group block h-full rounded-2xl border border-surface-600 bg-surface-900/60 p-6 transition-all hover:border-python-500/40 hover:bg-surface-800/60"
+                className={`group block h-full rounded-2xl border border-surface-600 bg-surface-900/60 p-6 transition-all ${accentBorder} hover:bg-surface-800/60`}
               >
-                <p className="text-xs font-semibold uppercase tracking-wider text-python-400">
+                <p className={`text-xs font-semibold uppercase tracking-wider ${accentText}`}>
                   {topic.subTopics.length} sub-topic{topic.subTopics.length !== 1 ? 's' : ''}
                 </p>
-                <h2 className="mt-2 text-2xl font-semibold text-white transition-colors group-hover:text-python-400">
+                <h2 className={`mt-2 text-2xl font-semibold text-white transition-colors ${accentHover}`}>
                   {topic.title}
                 </h2>
                 <p className="mt-3 text-sm leading-relaxed text-slate-400">{topic.description}</p>
@@ -37,7 +46,8 @@ export function HomePage() {
                 </span>
               </Link>
             </motion.div>
-          ))}
+            )
+          })}
         </div>
       </section>
     </div>

@@ -5,6 +5,7 @@ import { KadanesAlgorithm } from '../data-structures-and-algorithms/lists/algori
 import { MergeSort } from '../data-structures-and-algorithms/lists/algorithms/merge-sort'
 import { PythonTimsort } from '../data-structures-and-algorithms/lists/algorithms/python-timsort'
 import { QuickSort } from '../data-structures-and-algorithms/lists/algorithms/quick-sort'
+import { DutchNationalFlag } from '../data-structures-and-algorithms/lists/algorithms/dutch-national-flag'
 import { SelectionSort } from '../data-structures-and-algorithms/lists/algorithms/selection-sort'
 import { SortingOverview } from '../data-structures-and-algorithms/lists/algorithms/sorting-overview'
 import { HowPythonListsWork } from '../data-structures-and-algorithms/lists/data-structure/how-python-lists-work'
@@ -17,7 +18,7 @@ export const listsSubTopic: SubTopic = {
   id: 'lists',
   title: 'Lists',
   description:
-    'How Python lists work under the hood, copy semantics, sorting algorithms, and Kadane\'s algorithm.',
+    'How Python lists work under the hood, copy semantics, sorting algorithms, Dutch national flag, and Kadane\'s algorithm.',
   lessonSections: [
     {
       id: 'data-structure',
@@ -105,6 +106,13 @@ export const listsSubTopic: SubTopic = {
           description: 'Partition around pivot — fast average case, in-place.',
           readTime: '11 min',
           component: QuickSort,
+        },
+        {
+          id: 'dutch-national-flag',
+          title: 'Dutch National Flag',
+          description: 'Three-way partition — sort 0s, 1s, 2s in one pass, O(n).',
+          readTime: '10 min',
+          component: DutchNationalFlag,
         },
         {
           id: 'python-timsort',

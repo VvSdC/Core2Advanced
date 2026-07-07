@@ -2,6 +2,7 @@ import { Navigate, useNavigate, useParams } from 'react-router-dom'
 import { getAdjacentLessons, getLesson, getSubTopic, getSubTopicLessons, getTopic } from '../content/registry'
 import { LessonContent } from '../components/layout/LessonContent'
 import { LessonSidebar } from '../components/layout/LessonSidebar'
+import { SubTopicEmptyState } from '../components/layout/SubTopicEmptyState'
 
 export function LessonPage() {
   const navigate = useNavigate()
@@ -19,7 +20,11 @@ export function LessonPage() {
   }
 
   if (!lessonId) {
-    const firstLesson = getSubTopicLessons(subTopic)[0]
+    const lessons = getSubTopicLessons(subTopic)
+    if (lessons.length === 0) {
+      return <SubTopicEmptyState topic={topic} subTopic={subTopic} />
+    }
+    const firstLesson = lessons[0]
     if (firstLesson) {
       return (
         <Navigate

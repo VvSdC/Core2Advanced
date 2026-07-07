@@ -12,9 +12,29 @@ import { linkedListSubTopic } from './linked-list'
 
 import { listsSubTopic } from './lists'
 
+import { stringsSubTopic } from './strings'
+
+import { triesSubTopic } from './tries'
+
 import { miscellaneousSubTopic } from './miscellaneous'
 
 import { oopSubTopic } from './oop'
+
+import { stacksAndQueuesSubTopic } from './stacks-and-queues'
+
+import { backtrackingSubTopic } from './backtracking'
+
+import { binaryTreesSubTopic } from './binary-trees'
+
+import { graphsSubTopic } from './graphs'
+
+import { dynamicProgrammingSubTopic } from './dynamic-programming'
+
+import { fenwickTreesSubTopic } from './fenwick-trees'
+
+import { bitManipulationSubTopic } from './bit-manipulation'
+
+import { segmentTreesSubTopic } from './segment-trees'
 
 
 
@@ -56,7 +76,7 @@ export const pythonTopic: Topic = {
 
           'Classic structures and algorithms — internals, sorting, and problem-solving patterns.',
 
-        subTopicIds: ['lists', 'linked-list'],
+        subTopicIds: ['lists', 'strings', 'tries', 'linked-list', 'stacks-and-queues', 'backtracking', 'binary-trees', 'graphs', 'dynamic-programming', 'fenwick-trees', 'bit-manipulation', 'segment-trees'],
 
       },
 
@@ -78,7 +98,27 @@ export const pythonTopic: Topic = {
 
     listsSubTopic,
 
+    stringsSubTopic,
+
+    triesSubTopic,
+
     linkedListSubTopic,
+
+    stacksAndQueuesSubTopic,
+
+    backtrackingSubTopic,
+
+    binaryTreesSubTopic,
+
+    graphsSubTopic,
+
+    dynamicProgrammingSubTopic,
+
+    fenwickTreesSubTopic,
+
+    bitManipulationSubTopic,
+
+    segmentTreesSubTopic,
 
     miscellaneousSubTopic,
 
