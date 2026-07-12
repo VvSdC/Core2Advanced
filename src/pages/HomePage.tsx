@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { ArrowRight, Layers } from 'lucide-react'
 import { topics } from '../content/registry'
+import { getTopicAccent } from '../lib/topic-accent'
 
 export function HomePage() {
   return (
@@ -14,13 +15,7 @@ export function HomePage() {
 
         <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {topics.map((topic, index) => {
-            const accentLabel = topic.accent === 'striver' ? 'striver' : 'python'
-            const accentText =
-              accentLabel === 'striver' ? 'text-striver-400' : 'text-python-400'
-            const accentHover =
-              accentLabel === 'striver' ? 'group-hover:text-striver-400' : 'group-hover:text-python-400'
-            const accentBorder =
-              accentLabel === 'striver' ? 'hover:border-striver-500/40' : 'hover:border-python-500/40'
+            const { text: accentText, hover: accentHover, border: accentBorder } = getTopicAccent(topic.accent)
 
             return (
             <motion.div

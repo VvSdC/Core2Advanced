@@ -3,6 +3,7 @@ import { motion } from 'framer-motion'
 import { ArrowLeft, ArrowRight, BookOpen } from 'lucide-react'
 import { getSubTopicLessons, getTopic } from '../content/registry'
 import type { SubTopic, TopicCatalogEntry } from '../content/types'
+import { getTopicAccent } from '../lib/topic-accent'
 
 function SubTopicCard({
   topicId,
@@ -88,7 +89,7 @@ export function TopicPage() {
 
   const subTopicById = new Map(topic.subTopics.map((subTopic) => [subTopic.id, subTopic]))
   const groups = groupCatalogEntries(topic.catalog)
-  const accentText = topic.accent === 'striver' ? 'text-striver-400' : 'text-python-400'
+  const { text: accentText } = getTopicAccent(topic.accent)
   let cardIndex = 0
 
   return (

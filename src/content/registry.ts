@@ -1,9 +1,10 @@
 import type { Topic } from './types'
+import { generativeAiTopic } from './topics/generative-ai'
 import { pythonTopic } from './topics/python'
 import { striverA2zTopic } from './topics/striver-a2z'
 import { getSubTopicLessons } from './lesson-utils'
 
-export const topics: Topic[] = [pythonTopic, striverA2zTopic]
+export const topics: Topic[] = [pythonTopic, striverA2zTopic, generativeAiTopic]
 
 export function getTopic(topicId: string) {
   return topics.find((topic) => topic.id === topicId)
