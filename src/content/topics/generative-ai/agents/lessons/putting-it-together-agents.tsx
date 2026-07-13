@@ -54,7 +54,7 @@ graph.add_conditional_edges("supervisor", route)`}</Example>
           <li>Start with single ReAct — only add multi-agent when traces show repeated failures.</li>
           <li>Cap every loop: <code className="font-mono text-sm">max_iterations</code> in state + conditional edge.</li>
           <li>temperature=0 for supervisor and router; creative temperature only on writer nodes.</li>
-          <li>LangSmith traces per node — identify which agent is slow or hallucinating.</li>
+          <li>Langfuse or LangSmith traces per node — identify which agent is slow or hallucinating.</li>
           <li>Human-in-the-loop on destructive actions (delete, send email, charge payment).</li>
           <li>Read the research papers — they explain <em>why</em> each pattern was invented.</li>
         </ol>

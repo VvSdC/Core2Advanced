@@ -43,7 +43,7 @@ export function GenerationFaithfulnessMetrics() {
                 [
                   'Answer correctness',
                   'Does the answer match the ground-truth correct answer?',
-                  'The student's answer matches the answer key',
+                  "The student's answer matches the answer key",
                 ],
                 [
                   'Citation accuracy',

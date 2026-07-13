@@ -24,7 +24,7 @@ export function IntroductionToLangchain() {
           <li>Raw API calls get messy fast — prompts, parsing, retries, and tool loops spread across hundreds of lines.</li>
           <li>LangChain standardises the building blocks so you swap models or vector stores without rewriting everything.</li>
           <li>LCEL (LangChain Expression Language) lets you pipe components together with the <code className="font-mono text-sm">|</code> operator.</li>
-          <li>The ecosystem includes LangSmith (observability), LangGraph (stateful agents), and 100+ integrations.</li>
+          <li>The ecosystem includes LangSmith (observability — covered in its own sub-topic), LangGraph (stateful agents), and 100+ integrations.</li>
         </ul>
       </LessonSection>
 
