@@ -27,35 +27,56 @@ export function RealmRetrievalPretraining() {
         Read <em>Introduction to RAG</em> and the <em>RAG (Lewis et al.)</em> paper in Fundamentals first.
       </Callout>
 
+      <LessonSection title="What this paper means in plain English">
+        <p>
+          Most RAG systems today look up documents only when a user asks a question — like a student who
+          never opens a textbook until exam day. REALM asks: what if the model practised looking things up
+          during its entire education (pre-training), not just at test time?
+        </p>
+        <p>
+          During training, REALM hides important facts in text and forces the model to retrieve Wikipedia
+          articles to fill in the blanks. Over millions of practice rounds, the model learns both how to
+          search and how to read what it finds. The retriever and the reader improve together.
+        </p>
+        <p>
+          Think of it like teaching a child to use a library from age five, instead of waiting until high
+          school. The skill becomes natural. While production systems mostly use inference-time RAG (look up
+          at query time), REALM showed that retrieval can be a core ability baked into the model itself.
+        </p>
+      </LessonSection>
+
       <LessonSection title="Background — inference-only retrieval">
         <p>
-          Lewis et al.'s RAG retrieves documents only at inference time — the model itself was not trained to
-          retrieve. REALM proposed integrating retrieval into{' '}
-          <strong className="text-white">pre-training</strong> so the model learns to find and use documents as
-          a core skill.
+          Lewis et al.'s RAG retrieves documents only at inference time (when a user asks a question) — the
+          model itself was not trained to retrieve. REALM proposed integrating retrieval into{' '}
+          <strong className="text-white">pre-training</strong> (the initial large-scale training phase where
+          the model learns language from scratch) so the model learns to find and use documents as a core skill.
         </p>
       </LessonSection>
 
       <LessonSection title="How REALM works">
         <ContentStep number={1} title="Retrieve → Read → Predict">
           <p>
-            During pre-training on masked language modelling, REALM retrieves relevant Wikipedia documents for
-            each input, conditions the model on them, and predicts masked tokens. The retriever is updated
-            jointly with the language model.
+            During pre-training on <em>masked language modelling</em> (hiding random words and asking the model
+            to predict them), REALM retrieves relevant Wikipedia documents for each input, conditions the model
+            on them, and predicts masked tokens. The retriever is updated jointly with the language model.
           </p>
         </ContentStep>
         <ContentStep number={2} title="Asymmetric salient span masking">
           <p>
-            Instead of random masking, REALM masks <strong className="text-white">salient spans</strong> — names,
-            dates, facts — that are likely to benefit from retrieval. This forces the model to actually use
-            retrieved documents rather than rely on parametric memory alone.
+            Instead of random masking, REALM masks <strong className="text-white">salient spans</strong> — the
+            important bits like names, dates, and facts that are likely to benefit from retrieval. This forces
+            the model to actually use retrieved documents rather than rely on{' '}
+            <strong className="text-white">parametric memory</strong> (facts stored in its trained weights)
+            alone.
           </p>
         </ContentStep>
         <ContentStep number={3} title="Maximum inner product search">
           <p>
-            Passages are embedded and indexed for fast retrieval during training. The retriever improves over
-            training as the model learns which documents help prediction — a feedback loop between retrieval
-            quality and language modelling ability.
+            Passages are embedded and indexed for fast retrieval during training using{' '}
+            <em>maximum inner product search</em> (finding the passage vector most similar to the query vector
+            via dot product). The retriever improves over training as the model learns which documents help
+            prediction — a feedback loop between retrieval quality and language modelling ability.
           </p>
         </ContentStep>
       </LessonSection>
@@ -80,10 +101,10 @@ export function RealmRetrievalPretraining() {
             </thead>
             <tbody className="divide-y divide-surface-600">
               {[
-                ['When retrieval happens', 'During pre-training', 'At query time only'],
-                ['Retriever training', 'Jointly with LM', 'Separate embedding model (often pre-built)'],
-                ['Update knowledge', 'Re-index + optionally retrain', 'Re-index only — no retraining'],
-                ['Production use today', 'Research foundation', 'Standard pattern (LangChain, etc.)'],
+                ['When retrieval happens', 'During pre-training (while the model is learning)', 'Only when a user asks a question'],
+                ['Retriever training', 'Trained together with the language model', 'Usually a separate embedding model you pick or build'],
+                ['Update knowledge', 'Re-index documents and optionally retrain', 'Just re-index — no retraining needed'],
+                ['Production use today', 'Research foundation that shaped later ideas', 'The standard pattern (LangChain, LlamaIndex, etc.)'],
               ].map(([aspect, realm, rag]) => (
                 <tr key={aspect} className="hover:bg-surface-800/50">
                   <td className="px-4 py-3 font-semibold text-white">{aspect}</td>
@@ -95,6 +116,12 @@ export function RealmRetrievalPretraining() {
           </table>
         </div>
       </LessonSection>
+
+      <Callout variant="beginner" title="Key insight for beginners">
+        REALM teaches us that retrieval does not have to be bolted on at the end — a model can learn to search
+        as a skill. In practice you will mostly use inference-time RAG, but REALM explains why retrieval-aware
+        models matter.
+      </Callout>
 
       <KeyTakeaways
         items={[

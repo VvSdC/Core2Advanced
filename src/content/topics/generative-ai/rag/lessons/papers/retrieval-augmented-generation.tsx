@@ -26,20 +26,42 @@ export function RetrievalAugmentedGeneration() {
         Complete <em>RAG Architecture</em> and <em>Augmentation & Generation</em> in Fundamentals first.
       </Callout>
 
+      <LessonSection title="What this paper means in plain English">
+        <p>
+          Imagine you are taking an open-book exam. A plain language model has to answer from memory alone —
+          like a closed-book test. If the course material changed last week, the model still quotes what it
+          memorised during training. This paper says: let the model look things up first, then write the answer
+          using what it found.
+        </p>
+        <p>
+          That lookup step is <strong className="text-white">retrieval</strong>. The model searches a document
+          library (Wikipedia passages), pulls the most relevant pages, and feeds them into a text generator that
+          writes the final answer. The clever part is that both pieces — the searcher and the writer — can be
+          trained together as one system.
+        </p>
+        <p>
+          Lewis et al. also gave this pattern its name: <strong className="text-white">Retrieval-Augmented
+          Generation (RAG)</strong>. Think of it as giving an AI a searchable filing cabinet it can open at
+          question time, instead of hoping it remembered every fact from its original training.
+        </p>
+      </LessonSection>
+
       <LessonSection title="Background — parametric vs non-parametric memory">
         <p>
-          A language model's knowledge lives in its <strong className="text-white">parameters</strong> (weights).
+          A language model's knowledge lives in its <strong className="text-white">parameters</strong> (the
+          numerical weights learned during training — this is called{' '}
+          <strong className="text-white">parametric memory</strong>, knowledge baked into the model itself).
           Updating a fact requires retraining. Lewis et al. proposed adding a{' '}
-          <strong className="text-white">non-parametric memory</strong> — a searchable index of documents that
-          can be updated without touching model weights.
+          <strong className="text-white">non-parametric memory</strong> — an external, searchable index of
+          documents you can update by adding or swapping files, without retraining the model.
         </p>
       </LessonSection>
 
       <LessonSection title="The RAG architecture">
         <ContentStep number={1} title="Two components">
           <ul className="list-disc space-y-2 pl-5 text-slate-300">
-            <li><strong className="text-white">Retriever</strong> — dense passage retrieval (DPR) finds top-k relevant Wikipedia passages.</li>
-            <li><strong className="text-white">Generator</strong> — a seq2seq model (BART) produces the answer conditioned on retrieved passages.</li>
+            <li><strong className="text-white">Retriever</strong> — <em>dense passage retrieval (DPR)</em> embeds questions and documents as vectors and finds the top-k (best k) relevant Wikipedia passages by similarity.</li>
+            <li><strong className="text-white">Generator</strong> — a <em>seq2seq</em> (sequence-to-sequence) model like BART reads the retrieved passages and writes the answer word by word.</li>
           </ul>
         </ContentStep>
         <ContentStep number={2} title="Two variants">
@@ -71,9 +93,9 @@ export function RetrievalAugmentedGeneration() {
             </thead>
             <tbody className="divide-y divide-surface-600">
               {[
-                ['RAG Architecture', 'Formalises retrieve → augment → generate as a trainable architecture'],
-                ['Augmentation & Generation', 'Conditions generation on retrieved passages for factual answers'],
-                ['Introduction to RAG', 'Named and justified the RAG pattern over fine-tuning alone'],
+                ['RAG Architecture', 'This paper turns the retrieve → augment → generate flow into a concrete, trainable system you can build'],
+                ['Augmentation & Generation', 'Shows how stuffing retrieved passages into the prompt leads to more factual answers'],
+                ['Introduction to RAG', 'Explains why looking things up beats retraining the model every time your data changes'],
               ].map(([lesson, connection]) => (
                 <tr key={lesson} className="hover:bg-surface-800/50">
                   <td className="px-4 py-3 font-semibold text-white">{lesson}</td>
@@ -84,6 +106,12 @@ export function RetrievalAugmentedGeneration() {
           </table>
         </div>
       </LessonSection>
+
+      <Callout variant="beginner" title="Key insight for beginners">
+        RAG works because it separates <em>what the model knows</em> (its trained weights) from{' '}
+        <em>what it can look up</em> (your document index). You can update the index anytime without
+        retraining — that is the whole point.
+      </Callout>
 
       <KeyTakeaways
         items={[

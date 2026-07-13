@@ -27,11 +27,31 @@ export function LostInTheMiddle() {
         retrieving too many chunks can hurt even when retrieval is perfect.
       </Callout>
 
+      <LessonSection title="What this paper means in plain English">
+        <p>
+          You might think: if retrieval finds the right document, the LLM will use it. This paper proves that
+          is not always true. When you stuff a long prompt with many retrieved chunks, the model pays the most
+          attention to what is at the <em>beginning</em> and <em>end</em> — and often ignores what is in the
+          middle. It is like reading a long email and only remembering the first and last paragraphs.
+        </p>
+        <p>
+          The researchers tested this by placing the correct answer at different positions in the context —
+          first, middle, or last. When the answer sat in the middle, accuracy dropped sharply, even though the
+          information was right there. This happened across GPT, Claude, and open-source models.
+        </p>
+        <p>
+          For your RAG system, this means more chunks is not always better. Retrieve fewer, higher-quality
+          chunks, put the best ones first (or at both ends), and do not assume the LLM read everything you
+          sent it.
+        </p>
+      </LessonSection>
+
       <LessonSection title="The discovery">
         <p>
           When relevant information is placed in the <strong className="text-white">middle</strong> of a long
           context, models often fail to use it. Performance is highest when the answer is at the{' '}
-          <strong className="text-white">beginning or end</strong> of the prompt — a U-shaped attention curve.
+          <strong className="text-white">beginning or end</strong> of the prompt — a{' '}
+          <em>U-shaped attention curve</em> (high at the edges, low in the centre, like a letter U).
         </p>
       </LessonSection>
 
@@ -51,8 +71,8 @@ export function LostInTheMiddle() {
 
       <LessonSection title="Implications for RAG">
         <ul className="list-disc space-y-2 pl-5 text-slate-300">
-          <li><strong className="text-white">Limit k</strong> — retrieving 20 chunks floods the middle; k=3–7 is safer.</li>
-          <li><strong className="text-white">Rerank aggressively</strong> — put the best chunk first (or last) in the prompt.</li>
+          <li><strong className="text-white">Limit k</strong> — retrieving 20 chunks floods the middle of the prompt; k=3–7 (top 3 to 7 results) is safer.</li>
+          <li><strong className="text-white">Rerank aggressively</strong> — <em>reranking</em> (re-scoring retrieved chunks with a more accurate model) lets you put the best chunk first or last in the prompt.</li>
           <li><strong className="text-white">Smaller chunks</strong> — more focused context per chunk reduces noise in the middle.</li>
           <li><strong className="text-white">Lost-in-the-middle reranking</strong> — some pipelines deliberately sandwich key chunks at start and end.</li>
         </ul>
@@ -69,9 +89,9 @@ export function LostInTheMiddle() {
             </thead>
             <tbody className="divide-y divide-surface-600">
               {[
-                ['Chunk Size & Overlap', 'Smaller focused chunks = less middle-context noise'],
-                ['Introduction to Chunking', 'Why chunk granularity affects what the LLM actually reads'],
-                ['Augmentation & Generation', 'Order chunks by relevance score before injecting into prompt'],
+                ['Chunk Size & Overlap', 'Smaller, focused chunks mean less noise buried in the middle of your prompt'],
+                ['Introduction to Chunking', 'Explains why how you split documents affects what the LLM actually pays attention to'],
+                ['Augmentation & Generation', 'Always order chunks by relevance score before putting them in the prompt'],
               ].map(([lesson, conn]) => (
                 <tr key={lesson} className="hover:bg-surface-800/50">
                   <td className="px-4 py-3 font-semibold text-white">{lesson}</td>
@@ -82,6 +102,11 @@ export function LostInTheMiddle() {
           </table>
         </div>
       </LessonSection>
+
+      <Callout variant="beginner" title="Key insight for beginners">
+        Even perfect retrieval fails if the answer chunk sits in the middle of a long prompt. Retrieve fewer
+        chunks, rank the best ones first, and never assume the LLM read everything you sent.
+      </Callout>
 
       <KeyTakeaways
         items={[

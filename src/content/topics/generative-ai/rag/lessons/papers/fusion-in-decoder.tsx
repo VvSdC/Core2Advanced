@@ -28,24 +28,44 @@ export function FusionInDecoder() {
         context reaches the generator.
       </Callout>
 
+      <LessonSection title="What this paper means in plain English">
+        <p>
+          The original RAG paper had a fancy option where the model could switch to a different source document
+          for every single word it writes. That is powerful but complicated — like a journalist rewriting their
+          source citation mid-sentence. FiD asks a simpler question: what if we just grab several good sources
+          upfront and let the writer read them all at once?
+        </p>
+        <p>
+          FiD retrieves multiple passages (say, the top 10 or 100), encodes each one separately with the
+          question, and then lets the decoder (the text-generating half of the model) look at all of them
+          simultaneously when writing the answer. One search, one writing pass — much simpler to build and debug.
+        </p>
+        <p>
+          This is exactly how most modern RAG apps work today: retrieve several chunks, stuff them into the
+          prompt, and let the LLM synthesise an answer. FiD proved this simpler pattern actually works better
+          than the more complex per-token approach.
+        </p>
+      </LessonSection>
+
       <LessonSection title="The problem FiD solves">
         <p>
           Lewis et al.'s RAG-Token picks a different document per generated token — flexible but complex. FiD
           asks: what if we retrieve top-k passages once and let the decoder{' '}
-          <strong className="text-white">fuse them all in a single forward pass</strong>?
+          <strong className="text-white">fuse them all in a single forward pass</strong> (one pass through the
+          model where it reads every passage at the same time)?
         </p>
       </LessonSection>
 
       <LessonSection title="How FiD works">
         <ContentStep number={1} title="Retrieve once">
-          <p>DPR retrieves top-k passages (e.g. k=100, truncated to fit context).</p>
+          <p>DPR retrieves top-k passages (e.g. k=100, the 100 most relevant chunks, truncated to fit context).</p>
         </ContentStep>
         <ContentStep number={2} title="Encode each passage separately">
           <p>Each passage is concatenated with the question and encoded by the encoder independently.</p>
         </ContentStep>
         <ContentStep number={3} title="Decoder attends to all">
-          <p>The decoder cross-attends to <em>all</em> encoded passages simultaneously — fusing evidence from
-          multiple sources in one generation.</p>
+          <p>The decoder <em>cross-attends</em> (looks back at and pulls information from) <em>all</em> encoded
+          passages simultaneously — fusing evidence from multiple sources in one generation.</p>
         </ContentStep>
       </LessonSection>
 
@@ -68,9 +88,9 @@ export function FusionInDecoder() {
             </thead>
             <tbody className="divide-y divide-surface-600">
               {[
-                ['RAG Architecture', 'FiD is the query-pipeline pattern: retrieve k passages → fuse in one prompt'],
-                ['Augmentation & Generation', 'Multiple chunks in the context block mirrors FiD fusion'],
-                ['Introduction to RAG', 'Shows evolution from RAG-Token complexity to practical multi-passage RAG'],
+                ['RAG Architecture', 'FiD is the practical pattern you will actually build: retrieve several chunks, put them all in one prompt'],
+                ['Augmentation & Generation', 'Putting multiple chunks in your context block is exactly what FiD demonstrated works well'],
+                ['Introduction to RAG', 'Shows how RAG evolved from a complex research idea to the simple multi-chunk prompts we use today'],
               ].map(([lesson, conn]) => (
                 <tr key={lesson} className="hover:bg-surface-800/50">
                   <td className="px-4 py-3 font-semibold text-white">{lesson}</td>
@@ -81,6 +101,11 @@ export function FusionInDecoder() {
           </table>
         </div>
       </LessonSection>
+
+      <Callout variant="beginner" title="Key insight for beginners">
+        You do not need fancy per-word document switching. Retrieve your best chunks once, put them all in the
+        prompt, and let the LLM read everything together — that is the pattern FiD validated.
+      </Callout>
 
       <KeyTakeaways
         items={[

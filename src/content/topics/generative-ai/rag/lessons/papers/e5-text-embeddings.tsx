@@ -28,24 +28,47 @@ export function E5TextEmbeddings() {
         successor with better training data and asymmetric query/passage prefixes.
       </Callout>
 
+      <LessonSection title="What this paper means in plain English">
+        <p>
+          Sentence-BERT showed <em>how</em> to make sentence embeddings. E5 shows <em>how to train them better</em>
+          — with vastly more data and a small trick that makes search more accurate. Instead of relying on
+          small hand-labelled datasets, the E5 team mined about a billion text pairs from the web.
+        </p>
+        <p>
+          They also introduced a simple prefix convention: prepend <code className="font-mono text-sm">query:</code>{' '}
+          to search questions and <code className="font-mono text-sm">passage:</code> to stored documents. This
+          tells the model "I am looking for something" vs "I am something to be found" — like labelling envelopes
+          "question" and "answer" so the mail sorter knows which is which.
+        </p>
+        <p>
+          The result is an open-source embedding family that rivals paid APIs. If you are picking an embedding
+          model for your first RAG project, E5 is one of the safest choices — and this paper explains why it
+          works so well.
+        </p>
+      </LessonSection>
+
       <LessonSection title="How E5 improves on SBERT">
         <ContentStep number={1} title="Weakly-supervised data at scale">
           <p>
-            Instead of small hand-labelled datasets, E5 mined ~1 billion text pairs from the web — query-page
-            pairs, title-body pairs, paraphrases — with automatic filtering for quality.
+            Instead of small hand-labelled datasets, E5 mined ~1 billion text pairs from the web using{' '}
+            <em>weakly-supervised</em> learning (training on automatically collected pairs that are probably
+            related, without human labelling) — query-page pairs, title-body pairs, paraphrases — with automatic
+            filtering for quality.
           </p>
         </ContentStep>
         <ContentStep number={2} title="Contrastive learning">
           <p>
-            In-batch negatives: for each positive pair (query, relevant passage), all other passages in the batch
-            serve as negatives. The model learns to distinguish relevant from irrelevant at scale.
+            <em>In-batch negatives</em>: for each positive pair (query, relevant passage), all other passages
+            in the training batch serve as negatives. <em>Contrastive learning</em> (training the model to
+            distinguish relevant from irrelevant pairs) works at massive scale this way.
           </p>
         </ContentStep>
         <ContentStep number={3} title="Asymmetric prefixes">
           <p>
             Introduced <code className="font-mono text-sm">query:</code> and{' '}
-            <code className="font-mono text-sm">passage:</code> prefixes — telling the model whether input is a
-            search query or a stored document. Improves retrieval accuracy by 5–15%.
+            <code className="font-mono text-sm">passage:</code> <em>asymmetric prefixes</em> (different labels
+            for search queries vs stored documents) — telling the model whether input is a search query or a
+            stored document. Improves retrieval accuracy by 5–15%.
           </p>
         </ContentStep>
       </LessonSection>
@@ -69,9 +92,9 @@ export function E5TextEmbeddings() {
             </thead>
             <tbody className="divide-y divide-surface-600">
               {[
-                ['Open-Source Embeddings', 'E5-large-v2 is a top production choice — prefixes documented here'],
-                ['Commercial Embedding Models', 'E5-large beat ada-002 — open-source can match commercial quality'],
-                ['Popular Questions', 'query:/passage: prefixes explained in Q7 of Popular Questions'],
+                ['Open-Source Embeddings', 'E5-large-v2 is a top production choice — this paper explains the query:/passage: prefix trick'],
+                ['Commercial Embedding Models', 'E5-large beat OpenAI ada-002, proving open-source can match paid APIs'],
+                ['Popular Questions', 'The query:/passage: prefix convention is explained in Q7 of Popular Questions'],
               ].map(([lesson, conn]) => (
                 <tr key={lesson} className="hover:bg-surface-800/50">
                   <td className="px-4 py-3 font-semibold text-white">{lesson}</td>
@@ -82,6 +105,11 @@ export function E5TextEmbeddings() {
           </table>
         </div>
       </LessonSection>
+
+      <Callout variant="beginner" title="Key insight for beginners">
+        When using E5 (or BGE, which copied this trick), always prefix your query with <code className="font-mono text-sm">query:</code>{' '}
+        and your documents with <code className="font-mono text-sm">passage:</code> — it is a free accuracy boost.
+      </Callout>
 
       <KeyTakeaways
         items={[

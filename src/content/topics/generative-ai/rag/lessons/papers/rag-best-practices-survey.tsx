@@ -26,13 +26,32 @@ export function RagBestPracticesSurvey() {
         challenges) the tuning advice from those lessons.
       </Callout>
 
+      <LessonSection title="What this paper means in plain English">
+        <p>
+          RAG has a lot of knobs to turn: chunk size, overlap, embedding model, keyword vs semantic search,
+          reranking, query expansion. Beginners often ask "what are the best settings?" This paper actually
+          tested every major choice systematically and measured the results — like a cooking experiment that
+          tries different oven temperatures and reports which cake turned out best.
+        </p>
+        <p>
+          The biggest lesson: there is no one-size-fits-all answer. The best chunk size depends on your
+          documents. But some patterns hold across most datasets — a little overlap helps, combining keyword and
+          semantic search beats either alone, and reranking consistently improves results.
+        </p>
+        <p>
+          Think of this paper as a reality check for the tuning advice you learned in the Chunking lessons.
+          It confirms some recommendations and reminds you to always test on your own data before assuming
+          defaults will work.
+        </p>
+      </LessonSection>
+
       <LessonSection title="What they tested">
         <ul className="list-disc space-y-2 pl-5 text-slate-300">
           <li>Chunk sizes: 256, 512, 1024 tokens.</li>
           <li>Chunk overlap: 0%, 10%, 20%.</li>
           <li>Embedding models: OpenAI, Cohere, open-source.</li>
-          <li>Retrieval: dense, BM25, hybrid.</li>
-          <li>Reranking: with and without cross-encoder rerankers.</li>
+          <li>Retrieval: dense (meaning-based), BM25 (keyword), hybrid (both combined).</li>
+          <li>Reranking: with and without <em>cross-encoder rerankers</em> (a slower but more accurate model that reads query and document together).</li>
           <li>Query expansion: HyDE, multi-query.</li>
         </ul>
       </LessonSection>
@@ -75,9 +94,9 @@ export function RagBestPracticesSurvey() {
             </thead>
             <tbody className="divide-y divide-surface-600">
               {[
-                ['Chunk Size & Overlap', 'Empirical validation of tuning workflow — test on your data'],
-                ['Fixed & Recursive Splitting', 'Confirms recursive splitting as strong default'],
-                ['Semantic Chunking', 'Tested alongside fixed-size — dataset-dependent winner'],
+                ['Chunk Size & Overlap', 'Confirms you should test 256, 512, and 1024 tokens on your own data — no universal winner'],
+                ['Fixed & Recursive Splitting', 'Validates recursive splitting as a strong default starting point'],
+                ['Semantic Chunking', 'Tested alongside fixed-size — which wins depends on your dataset'],
               ].map(([lesson, conn]) => (
                 <tr key={lesson} className="hover:bg-surface-800/50">
                   <td className="px-4 py-3 font-semibold text-white">{lesson}</td>
@@ -88,6 +107,11 @@ export function RagBestPracticesSurvey() {
           </table>
         </div>
       </LessonSection>
+
+      <Callout variant="beginner" title="Key insight for beginners">
+        There is no magic default for chunk size or retrieval method. Test on your own documents, but start
+        with hybrid search plus reranking — that upgrade helps on most datasets.
+      </Callout>
 
       <KeyTakeaways
         items={[
