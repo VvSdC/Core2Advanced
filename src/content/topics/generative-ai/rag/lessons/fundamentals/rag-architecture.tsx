@@ -161,6 +161,12 @@ export function RagArchitecture() {
             <em>k</em> is just the number of chunks you ask for.
           </p>
           <p className="mt-3">
+            This comparison uses a <strong className="text-white">bi-encoder</strong> — the query and each chunk
+            were encoded separately, and cosine similarity ranks them. See{' '}
+            <em>Bi-Encoders & Cross-Encoders</em> for how that architecture works and why production systems
+            often add a cross-encoder reranking step afterward.
+          </p>
+          <p className="mt-3">
             <strong className="text-white">What this step produces:</strong> a short list of the most relevant
             passages. For our vacation question, the system likely returns Chunk 14 and Chunk 15 (both about
             vacation policy) and maybe Chunk 22 (about part-time employee benefits, if similarity is close).

@@ -10,6 +10,12 @@ import {
 export function MmrAndReranking() {
   return (
     <LessonArticle>
+      <Callout variant="beginner" title="Read this after">
+        Complete <em>Fundamentals → Bi-Encoders & Cross-Encoders</em> first. This lesson assumes you understand
+        why bi-encoders are fast but imprecise, and why cross-encoders rerank a shortlist. MMR is a separate
+        technique that solves redundancy — not ranking imprecision.
+      </Callout>
+
       <LessonSection title="The redundant results problem">
         <p className="text-slate-300">
           Imagine you ask a librarian for five books about refund policies. Instead of five <em>different</em>{' '}
@@ -37,10 +43,12 @@ export function MmrAndReranking() {
             it to the LLM.
           </div>
         </div>
-        <Callout variant="beginner" title="The fix">
-          You need two techniques: <strong className="text-white">MMR</strong> to pick diverse chunks, and{' '}
-          <strong className="text-white">reranking</strong> to double-check that the best chunks are actually
-          ranked first. They solve different problems and are often used together.
+        <Callout variant="beginner" title="Two different problems, two different fixes">
+          <strong className="text-white">Redundant results</strong> (five copies of the same fact) → fix with{' '}
+          <strong className="text-white">MMR</strong>.{' '}
+          <strong className="text-white">Wrong ranking</strong> (right chunk exists but at position 8, not 1) →
+          fix with <strong className="text-white">cross-encoder reranking</strong>. They solve different problems
+          and are often used together.
         </Callout>
       </LessonSection>
 
@@ -51,10 +59,9 @@ export function MmrAndReranking() {
           too similar to a chunk already selected. The result: diverse evidence instead of five copies of the
           same paragraph.
         </p>
-        <p>
-          A knob called <strong className="text-white">λ (lambda)</strong> controls the trade-off. λ=1.0 is pure
-          relevance (standard top-k, no diversity). λ=0.5 balances relevance and diversity. λ=0.0 is pure
-          diversity (probably too scattered for RAG).
+        <p className="mt-3">
+          MMR uses the same kind of vector similarity as bi-encoder retrieval — it compares embedding vectors
+          to measure how alike two chunks are. It does not use a cross-encoder.
         </p>
       </Definition>
 
@@ -88,36 +95,143 @@ export function MmrAndReranking() {
         </ContentStep>
       </LessonSection>
 
-      <LessonSection title="Reranking — when relevance ranking is not precise enough">
+      <LessonSection title="The MMR formula — what each part actually means">
         <p className="text-slate-300">
-          MMR solves redundancy, but another problem remains: the right chunk exists in your database but ranks
-          at position 8 instead of position 1. The bi-encoder used for dense retrieval embeds the query and each
-          document <em>separately</em> — fast, but less accurate than reading them together.
+          Researchers write MMR as a formula. It looks intimidating, but every symbol maps to something you
+          already understand from the steps above. Here it is — then we unpack it piece by piece.
         </p>
+
+        <div className="mt-4 rounded-xl border border-surface-600 bg-surface-900 p-5 font-mono text-sm text-slate-200">
+          <div className="text-center text-base">
+            MMR(d) = λ · sim(d, q) − (1 − λ) · max<sub>d<sub>j</sub> ∈ S</sub> sim(d, d<sub>j</sub>)
+          </div>
+        </div>
+
+        <p className="mt-4 text-slate-300">
+          In plain English: for each candidate chunk <strong className="text-white">d</strong> that is not yet
+          selected, compute a score. Pick the chunk with the highest score. Repeat until you have k chunks.
+        </p>
+
+        <div className="mt-6 space-y-4">
+          <div className="rounded-xl border border-surface-600 bg-surface-800/50 p-4">
+            <p className="text-sm font-semibold text-white">sim(d, q) — "How relevant is this chunk to the question?"</p>
+            <p className="mt-2 text-sm text-slate-400">
+              Cosine similarity between the chunk's embedding vector and the query's embedding vector. High
+              score = chunk probably answers the question. This is the same similarity bi-encoder dense retrieval
+              uses. The <strong className="text-white">λ</strong> multiplier in front of this term rewards relevance.
+            </p>
+          </div>
+          <div className="rounded-xl border border-surface-600 bg-surface-800/50 p-4">
+            <p className="text-sm font-semibold text-white">max sim(d, d<sub>j</sub>) — "How similar is this chunk to something I already picked?"</p>
+            <p className="mt-2 text-sm text-slate-400">
+              Compare chunk <strong className="text-white">d</strong> against every chunk already in the selected
+              set <strong className="text-white">S</strong>. Take the <em>highest</em> similarity — the closest
+              match to an existing pick. If chunk d is almost a duplicate of something already selected, this
+              number is high and the subtraction <em>hurts</em> the final score. The{' '}
+              <strong className="text-white">(1 − λ)</strong> multiplier controls how much this penalty matters.
+            </p>
+          </div>
+          <div className="rounded-xl border border-surface-600 bg-surface-800/50 p-4">
+            <p className="text-sm font-semibold text-white">λ (lambda) — the relevance vs diversity dial</p>
+            <p className="mt-2 text-sm text-slate-400">
+              A number between 0 and 1. At <strong className="text-white">λ = 1.0</strong>, the penalty term
+              disappears — pure relevance, no diversity (standard top-k). At{' '}
+              <strong className="text-white">λ = 0.5</strong>, relevance and diversity are weighted equally — the
+              usual RAG default. At <strong className="text-white">λ = 0.0</strong>, only diversity matters —
+              results become scattered and usually unhelpful.
+            </p>
+          </div>
+          <div className="rounded-xl border border-surface-600 bg-surface-800/50 p-4">
+            <p className="text-sm font-semibold text-white">S — the set of chunks already selected</p>
+            <p className="mt-2 text-sm text-slate-400">
+              Starts empty. After picking chunk #1, S = {'{chunk #1}'}'. After picking chunk #2, S = {'{chunk #1, chunk #2}'}.
+              The penalty grows as S grows — each new pick must be different from <em>all</em> previous picks,
+              not just the last one.
+            </p>
+          </div>
+        </div>
+
+        <Callout variant="beginner" title="You do not need to compute this by hand">
+          Vector databases (Pinecone, Weaviate, Chroma) and frameworks like LangChain expose MMR as a parameter
+          — you set λ and k, and the library runs the formula. The value of seeing the formula is understanding{' '}
+          <em>why</em> MMR works: it is a tug-of-war between "relevant to the question" and "not a duplicate of
+          what I already have."
+        </Callout>
+      </LessonSection>
+
+      <LessonSection title="Worked example — picking slot #2 by hand">
+        <p className="text-slate-300">
+          Query: "What is the refund policy?" Chunk #1 is already selected: "Refund within 30 days." λ = 0.5.
+          Three candidates remain for slot #2:
+        </p>
+        <div className="mt-4 overflow-x-auto rounded-xl border border-surface-600">
+          <table className="w-full text-sm text-slate-300">
+            <thead>
+              <tr className="border-b border-surface-600 bg-surface-800 text-left text-xs uppercase tracking-wider text-slate-400">
+                <th className="px-4 py-3">Candidate</th>
+                <th className="px-4 py-3">sim(d, q)</th>
+                <th className="px-4 py-3">sim(d, chunk #1)</th>
+                <th className="px-4 py-3">MMR score</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-surface-600">
+              <tr className="hover:bg-surface-800/50">
+                <td className="px-4 py-3 text-slate-400">"30-day refund window"</td>
+                <td className="px-4 py-3 text-slate-400">0.92</td>
+                <td className="px-4 py-3 text-slate-400">0.95 (near duplicate)</td>
+                <td className="px-4 py-3 text-slate-400">0.5×0.92 − 0.5×0.95 = <strong className="text-white">−0.015</strong></td>
+              </tr>
+              <tr className="hover:bg-surface-800/50">
+                <td className="px-4 py-3 text-slate-400">"Free shipping over $50"</td>
+                <td className="px-4 py-3 text-slate-400">0.71</td>
+                <td className="px-4 py-3 text-slate-400">0.18 (different topic)</td>
+                <td className="px-4 py-3 text-slate-400">0.5×0.71 − 0.5×0.18 = <strong className="text-genai-400">0.265</strong></td>
+              </tr>
+              <tr className="hover:bg-surface-800/50">
+                <td className="px-4 py-3 text-slate-400">"Warranty covers 1 year"</td>
+                <td className="px-4 py-3 text-slate-400">0.65</td>
+                <td className="px-4 py-3 text-slate-400">0.22 (different topic)</td>
+                <td className="px-4 py-3 text-slate-400">0.5×0.65 − 0.5×0.22 = <strong className="text-white">0.215</strong></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p className="mt-4 text-slate-300">
+          Without MMR, "30-day refund window" wins slot #2 (highest sim(d, q) = 0.92). With MMR, its near-duplicate
+          penalty drags the score below zero. "Free shipping over $50" wins — lower relevance (0.71) but much
+          higher novelty. That is the formula doing exactly what we want.
+        </p>
+      </LessonSection>
+
+      <LessonSection title="Reranking — when bi-encoder ranking is not precise enough">
+        <p className="text-slate-300">
+          MMR solves redundancy. A separate problem remains: the right chunk exists in your database but ranks at
+          position 8 instead of position 1. This is a bi-encoder limitation — as explained in{' '}
+          <em>Fundamentals → Bi-Encoders & Cross-Encoders</em>, the query and chunk are encoded separately, so
+          subtle relevance signals are missed.
+        </p>
+
         <Definition term="Cross-encoder reranking">
           <p>
-            A cross-encoder reads the query and a candidate chunk <strong className="text-white">together</strong>{' '}
-            in a single forward pass, producing a much more accurate relevance score. It is too slow to run on
-            every chunk in your database (millions of comparisons), but fast enough on a shortlist of 50.
-          </p>
-          <p>
-            Analogy: bi-encoder is a quick scan of book titles from across the room. Cross-encoder is sitting
-            down and reading the first page of each shortlisted book before deciding.
+            A cross-encoder reads the query and each candidate chunk <strong className="text-white">together</strong>{' '}
+            in a single forward pass and outputs a precise relevance score. Too slow for millions of chunks —
+            but fast enough on a shortlist of 50 returned by bi-encoder retrieval.
           </p>
         </Definition>
 
         <div className="mt-4 rounded-xl border border-surface-600 bg-surface-800/50 p-4">
-          <p className="text-sm font-semibold text-white">The two-stage pattern</p>
+          <p className="text-sm font-semibold text-white">The two-stage pattern (recap from Fundamentals)</p>
           <p className="mt-2 text-sm text-slate-400">
-            <strong className="text-white">Stage 1 — Bi-encoder retrieval:</strong> Fast search returns top 50
-            candidates from the full database.
+            <strong className="text-white">Stage 1 — Bi-encoder retrieval:</strong> Fast search over the full
+            database. Returns top 50 candidates. Some ranking errors are expected.
           </p>
           <p className="mt-1 text-sm text-slate-400">
-            <strong className="text-white">Stage 2 — Cross-encoder reranking:</strong> The reranker reads each of
-            the 50 candidates alongside the query and re-scores them. Return the top 5.
+            <strong className="text-white">Stage 2 — Cross-encoder reranking:</strong> Score each of the 50
+            (query, chunk) pairs together. Return the top 5 with much higher precision.
           </p>
-          <p className="mt-2 text-sm text-genai-400">
-            Best of both worlds: speed of bi-encoder search + precision of cross-encoder scoring.
+          <p className="mt-1 text-sm text-slate-400">
+            <strong className="text-white">Stage 3 — MMR (optional):</strong> If the top 5 are still redundant,
+            apply MMR to diversify before sending to the LLM.
           </p>
         </div>
       </LessonSection>
@@ -134,10 +248,10 @@ export function MmrAndReranking() {
             </thead>
             <tbody className="divide-y divide-surface-600">
               {[
-                ['Cohere Rerank', 'Commercial API — strong multilingual support', 'Production apps needing quality without hosting models'],
+                ['Cohere Rerank', 'Commercial cross-encoder API — strong multilingual support', 'Production apps needing quality without hosting models'],
                 ['bge-reranker-large', 'Open-source cross-encoder (BAAI)', 'Self-hosted pipelines, strong English performance'],
-                ['ms-marco-MiniLM', 'Lightweight open-source reranker', 'Low-latency setups where speed matters'],
-                ['Pinecone rerank', 'Integrated reranker in Pinecone 2.0', 'Pinecone users who want reranking without extra infra'],
+                ['ms-marco-MiniLM', 'Lightweight open-source cross-encoder', 'Low-latency setups where speed matters'],
+                ['Pinecone rerank', 'Integrated cross-encoder in Pinecone 2.0', 'Pinecone users who want reranking without extra infra'],
               ].map(([reranker, what, bestFor]) => (
                 <tr key={reranker} className="hover:bg-surface-800/50">
                   <td className="px-4 py-3 font-semibold text-white">{reranker}</td>
@@ -165,22 +279,22 @@ export function MmrAndReranking() {
                 [
                   'Top-k results all say the same thing',
                   'Add MMR',
-                  'Chunks overlap from chunking — MMR forces diversity',
+                  'Chunks overlap from chunking — MMR penalises near-duplicates via the sim(d, dⱼ) term',
                 ],
                 [
                   'Right chunk is in top 20 but not top 5',
                   'Add cross-encoder reranking',
-                  'Bi-encoder ranking is imprecise — reranker reads query+chunk together',
+                  'Bi-encoder ranked imprecisely — cross-encoder reads query+chunk together',
                 ],
                 [
                   'Both problems at once',
                   'Rerank top 50, then apply MMR on top 10',
-                  'Reranking fixes order; MMR fixes redundancy in the final set',
+                  'Cross-encoder fixes order; MMR fixes redundancy in the final set',
                 ],
                 [
                   'Retrieval recall is low (< 80%)',
                   'Fix chunking or hybrid search first',
-                  'Reranking cannot find chunks that retrieval never returned',
+                  'Reranking cannot find chunks that bi-encoder retrieval never returned',
                 ],
               ].map(([symptom, solution, why]) => (
                 <tr key={symptom} className="hover:bg-surface-800/50">
@@ -200,10 +314,10 @@ export function MmrAndReranking() {
 
       <KeyTakeaways
         items={[
-          'Standard top-k often returns redundant chunks — five copies of the same fact, zero diversity.',
-          'MMR balances relevance with diversity: each pick must be different from previous selections.',
-          'Cross-encoder reranking: bi-encoder finds top 50 fast, cross-encoder picks the best 5 precisely.',
-          'Add MMR for redundancy; add reranking for imprecise ranking. Fix recall before either.',
+          'MMR fixes redundancy — five copies of the same fact. Cross-encoder reranking fixes imprecise bi-encoder ranking. Different problems.',
+          'MMR formula: reward sim(d, q) relevance, penalise sim(d, dⱼ) similarity to already-selected chunks. λ controls the balance.',
+          'Worked example: near-duplicate "30-day refund window" loses to "Free shipping" because the penalty term drags its MMR score below zero.',
+          'Production pipeline: bi-encoder retrieves top 50 → cross-encoder reranks to top 5 → optional MMR for diversity.',
         ]}
       />
     </LessonArticle>

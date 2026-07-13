@@ -2,6 +2,7 @@ import type { SubTopic } from '../../../types'
 
 // Fundamentals
 import { AugmentationAndGeneration } from './lessons/fundamentals/augmentation-and-generation'
+import { BiEncodersAndCrossEncoders } from './lessons/fundamentals/bi-encoders-and-cross-encoders'
 import { IntroductionToRag } from './lessons/fundamentals/introduction-to-rag'
 import { RagArchitecture } from './lessons/fundamentals/rag-architecture'
 
@@ -74,18 +75,19 @@ export const ragSubTopic: SubTopic = {
           id: 'fundamentals-lessons',
           title: 'Lessons',
           lessons: [
-            { id: 'introduction-to-rag', title: 'Introduction to RAG', description: 'What RAG is, why it exists, and when to use it over fine-tuning.', readTime: '8 min', component: IntroductionToRag },
-            { id: 'rag-architecture', title: 'RAG Architecture', description: 'Offline indexing vs online querying — the two-phase system design.', readTime: '10 min', component: RagArchitecture },
-            { id: 'augmentation-and-generation', title: 'Augmentation & Generation', description: 'Prompt templates, grounding instructions, and diagnosing failures.', readTime: '10 min', component: AugmentationAndGeneration },
+            { id: 'introduction-to-rag', title: 'Introduction to RAG', description: 'What RAG is, why it exists, and when to use it over fine-tuning.', readTime: '10 min', component: IntroductionToRag },
+            { id: 'rag-architecture', title: 'RAG Architecture', description: 'Offline indexing vs online querying — the two-phase system design.', readTime: '12 min', component: RagArchitecture },
+            { id: 'bi-encoders-and-cross-encoders', title: 'Bi-Encoders & Cross-Encoders', description: 'How retrieval scores relevance — two architectures, flowcharts, and the two-stage pattern.', readTime: '12 min', component: BiEncodersAndCrossEncoders },
+            { id: 'augmentation-and-generation', title: 'Augmentation & Generation', description: 'Prompt templates, grounding instructions, and diagnosing failures.', readTime: '12 min', component: AugmentationAndGeneration },
           ],
         },
         {
           id: 'fundamentals-papers',
           title: 'Research Papers',
           lessons: [
-            { id: 'retrieval-augmented-generation', title: 'RAG (Lewis et al.)', description: 'The original RAG paper — retriever + generator architecture.', readTime: '14 min', component: RetrievalAugmentedGeneration },
-            { id: 'realm-retrieval-pretraining', title: 'REALM', description: 'Retrieval-augmented pre-training during model training.', readTime: '12 min', component: RealmRetrievalPretraining },
-            { id: 'fusion-in-decoder', title: 'Fusion-in-Decoder (FiD)', description: 'Fuse multiple retrieved passages in a single decoder pass.', readTime: '10 min', component: FusionInDecoder },
+            { id: 'retrieval-augmented-generation', title: 'RAG (Lewis et al.)', description: 'Full paper walkthrough — parametric vs non-parametric memory, DPR + BART, RAG-Sequence vs RAG-Token.', readTime: '20 min', component: RetrievalAugmentedGeneration },
+            { id: 'realm-retrieval-pretraining', title: 'REALM', description: 'Full paper walkthrough — retrieval baked into pretraining, contrast with inference-time RAG.', readTime: '18 min', component: RealmRetrievalPretraining },
+            { id: 'fusion-in-decoder', title: 'Fusion-in-Decoder (FiD)', description: 'Full paper walkthrough — encode passages separately, fuse in decoder, multi-doc QA.', readTime: '18 min', component: FusionInDecoder },
           ],
         },
       ],
@@ -110,9 +112,9 @@ export const ragSubTopic: SubTopic = {
           id: 'embeddings-papers',
           title: 'Research Papers',
           lessons: [
-            { id: 'sentence-bert', title: 'Sentence-BERT', description: 'Siamese BERT networks — foundation of sentence embeddings.', readTime: '12 min', component: SentenceBert },
-            { id: 'dense-passage-retrieval', title: 'Dense Passage Retrieval', description: 'DPR — dual encoders for question-passage embedding similarity.', readTime: '12 min', component: DensePassageRetrieval },
-            { id: 'e5-text-embeddings', title: 'E5 Embeddings', description: 'Weakly-supervised contrastive learning — query:/passage: prefixes.', readTime: '12 min', component: E5TextEmbeddings },
+            { id: 'sentence-bert', title: 'Sentence-BERT', description: 'Full paper walkthrough — Siamese BERT, pooling, 10,000× speedup, sentence-transformers.', readTime: '18 min', component: SentenceBert },
+            { id: 'dense-passage-retrieval', title: 'Dense Passage Retrieval', description: 'Full paper walkthrough — dual encoders, contrastive training, beating BM25 by 9–19%.', readTime: '18 min', component: DensePassageRetrieval },
+            { id: 'e5-text-embeddings', title: 'E5 Embeddings', description: 'Full paper walkthrough — weakly-supervised contrastive learning, query:/passage: prefixes.', readTime: '18 min', component: E5TextEmbeddings },
           ],
         },
       ],
@@ -136,8 +138,8 @@ export const ragSubTopic: SubTopic = {
           id: 'chunking-papers',
           title: 'Research Papers',
           lessons: [
-            { id: 'lost-in-the-middle', title: 'Lost in the Middle', description: 'LLMs ignore middle context — why k and chunk order matter.', readTime: '10 min', component: LostInTheMiddle },
-            { id: 'rag-best-practices-survey', title: 'RAG Best Practices Survey', description: 'Systematic benchmark of chunk size, overlap, retrieval, and reranking.', readTime: '12 min', component: RagBestPracticesSurvey },
+            { id: 'lost-in-the-middle', title: 'Lost in the Middle', description: 'Full paper walkthrough — U-shaped attention, experiments, k=3–7 and chunk ordering.', readTime: '18 min', component: LostInTheMiddle },
+            { id: 'rag-best-practices-survey', title: 'RAG Best Practices Survey', description: 'Full paper walkthrough — systematic benchmark of chunking, retrieval, and reranking.', readTime: '20 min', component: RagBestPracticesSurvey },
           ],
         },
       ],
@@ -162,8 +164,8 @@ export const ragSubTopic: SubTopic = {
           id: 'vector-databases-papers',
           title: 'Research Papers',
           lessons: [
-            { id: 'hnsw-ann-search', title: 'HNSW', description: 'Hierarchical navigable small world graphs — ANN algorithm behind most vector DBs.', readTime: '10 min', component: HnswAnnSearch },
-            { id: 'faiss-billion-scale', title: 'FAISS (Billion-Scale)', description: 'GPU similarity search, IVF, and Product Quantization at billion-vector scale.', readTime: '10 min', component: FaissBillionScale },
+            { id: 'hnsw-ann-search', title: 'HNSW', description: 'Full paper walkthrough — hierarchical graph layers, greedy traversal, ef_search tuning.', readTime: '18 min', component: HnswAnnSearch },
+            { id: 'faiss-billion-scale', title: 'FAISS (Billion-Scale)', description: 'Full paper walkthrough — IVF, Product Quantization, GPU search at billion scale.', readTime: '18 min', component: FaissBillionScale },
           ],
         },
       ],
@@ -188,9 +190,9 @@ export const ragSubTopic: SubTopic = {
           id: 'retrieval-papers',
           title: 'Research Papers',
           lessons: [
-            { id: 'hyde-zero-shot-retrieval', title: 'HyDE', description: 'Hypothetical document embeddings for better zero-shot dense retrieval.', readTime: '10 min', component: HydeZeroShotRetrieval },
-            { id: 'colbert-late-interaction', title: 'ColBERT', description: 'Late interaction retrieval — more accurate than bi-encoders, faster than cross-encoders.', readTime: '12 min', component: ColbertLateInteraction },
-            { id: 'self-rag', title: 'Self-RAG', description: 'Adaptive retrieval + self-critique tokens for faithfulness.', readTime: '12 min', component: SelfRag },
+            { id: 'hyde-zero-shot-retrieval', title: 'HyDE', description: 'Full paper walkthrough — hypothetical document embeddings for zero-shot dense retrieval.', readTime: '18 min', component: HydeZeroShotRetrieval },
+            { id: 'colbert-late-interaction', title: 'ColBERT', description: 'Full paper walkthrough — late interaction, token-level matching, between bi- and cross-encoder.', readTime: '20 min', component: ColbertLateInteraction },
+            { id: 'self-rag', title: 'Self-RAG', description: 'Full paper walkthrough — adaptive retrieval, reflection tokens, candidate selection.', readTime: '20 min', component: SelfRag },
           ],
         },
       ],
@@ -214,8 +216,8 @@ export const ragSubTopic: SubTopic = {
           id: 'evaluating-papers',
           title: 'Research Papers',
           lessons: [
-            { id: 'ragas-evaluation', title: 'RAGAS', description: 'Automated faithfulness, relevancy, and context quality metrics.', readTime: '10 min', component: RagasEvaluation },
-            { id: 'ares-automated-evaluation', title: 'ARES', description: 'Lightweight judge models for scalable production RAG evaluation.', readTime: '10 min', component: AresAutomatedEvaluation },
+            { id: 'ragas-evaluation', title: 'RAGAS', description: 'Full paper walkthrough — faithfulness, relevancy, context metrics, claim extraction.', readTime: '18 min', component: RagasEvaluation },
+            { id: 'ares-automated-evaluation', title: 'ARES', description: 'Full paper walkthrough — lightweight judge models for scalable production eval.', readTime: '18 min', component: AresAutomatedEvaluation },
           ],
         },
       ],

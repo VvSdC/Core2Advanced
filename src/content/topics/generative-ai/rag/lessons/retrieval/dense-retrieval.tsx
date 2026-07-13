@@ -10,6 +10,12 @@ import {
 export function DenseRetrieval() {
   return (
     <LessonArticle>
+      <Callout variant="beginner" title="Read this after">
+        Complete <em>Fundamentals → Bi-Encoders & Cross-Encoders</em> first. Dense retrieval <em>is</em> bi-encoder
+        retrieval — this lesson shows it in practice. If bi-encoders are new to you, start there for the architecture
+        and flowcharts.
+      </Callout>
+
       <Definition term="Dense retrieval">
         <p>
           Dense retrieval is <strong className="text-white">meaning-based search</strong>. Instead of matching

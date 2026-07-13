@@ -11,6 +11,11 @@ import {
 export function RetrievalOverview() {
   return (
     <LessonArticle>
+      <Callout variant="beginner" title="Prerequisite">
+        If you have not read <em>Fundamentals → Bi-Encoders & Cross-Encoders</em>, do that first. It explains the
+        two architectures behind almost every retrieval strategy in this section.
+      </Callout>
+
       <Definition term="Retrieval">
         <p>
           Retrieval is the <strong className="text-white">search step</strong> in RAG. A user asks a question,

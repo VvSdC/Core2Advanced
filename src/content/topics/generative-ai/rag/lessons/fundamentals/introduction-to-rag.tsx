@@ -238,8 +238,8 @@ export function IntroductionToRag() {
         </p>
         <ContentStep number={1} title="Fundamentals (you are here)">
           <p>
-            What RAG is, how the architecture works, and how augmentation and generation fit together. Start here
-            before anything else.
+            What RAG is, how the architecture works, how bi-encoders and cross-encoders score relevance, and how
+            augmentation and generation fit together. Start here before anything else.
           </p>
         </ContentStep>
         <ContentStep number={2} title="Embeddings">
