@@ -22,6 +22,10 @@ import { promptEngineeringSubTopic } from './prompt-engineering'
 
 import { ragSubTopic } from './rag'
 
+import { fineTuningSubTopic } from './fine-tuning'
+
+import { reinforcementLearningSubTopic } from './reinforcement-learning'
+
 
 
 export const generativeAiTopic: Topic = {
@@ -32,7 +36,7 @@ export const generativeAiTopic: Topic = {
 
   description:
 
-    'From model internals to RAG, agents, observability, and inference optimization (vLLM, llama.cpp) — build, deploy, serve, and optimize production LLM systems.',
+    'From model internals to RAG, model alignment (fine-tuning & RL), agents, observability, and inference optimization — build, specialize, align, deploy, and serve production LLM systems.',
 
   accent: 'genai',
 
@@ -45,6 +49,26 @@ export const generativeAiTopic: Topic = {
     { type: 'subTopic', subTopicId: 'prompt-engineering' },
 
     { type: 'subTopic', subTopicId: 'rag' },
+
+    {
+
+      type: 'section',
+
+      section: {
+
+        id: 'model-alignment',
+
+        title: 'Model Alignment',
+
+        description:
+
+          'Specialize and align open models — fine-tuning (SFT, LoRA, QLoRA, Unsloth) then reinforcement learning (RLHF, DPO, and related preference methods).',
+
+        subTopicIds: ['fine-tuning', 'reinforcement-learning'],
+
+      },
+
+    },
 
     { type: 'subTopic', subTopicId: 'langchain' },
 
@@ -88,6 +112,10 @@ export const generativeAiTopic: Topic = {
 
     ragSubTopic,
 
+    fineTuningSubTopic,
+
+    reinforcementLearningSubTopic,
+
     langchainSubTopic,
 
     langgraphSubTopic,
@@ -105,4 +133,3 @@ export const generativeAiTopic: Topic = {
   ],
 
 }
-
