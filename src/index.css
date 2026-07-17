@@ -22,6 +22,39 @@
 
   --color-genai-400: #34d399;
   --color-genai-500: #10b981;
+
+  --color-core-400: #fb7185;
+  --color-core-500: #f43f5e;
+
+  --color-system-design-400: #818cf8;
+  --color-system-design-500: #6366f1;
+
+  --color-web-400: #22d3ee;
+  --color-web-500: #06b6d4;
+
+  --color-databases-400: #f472b6;
+  --color-databases-500: #ec4899;
+
+  --color-mathematics-400: #fbbf24;
+  --color-mathematics-500: #f59e0b;
+
+  --color-data-visualization-400: #2dd4bf;
+  --color-data-visualization-500: #14b8a6;
+
+  --color-data-science-400: #60a5fa;
+  --color-data-science-500: #3b82f6;
+
+  --color-machine-learning-400: #c084fc;
+  --color-machine-learning-500: #a855f7;
+
+  --color-nlp-400: #4ade80;
+  --color-nlp-500: #22c55e;
+
+  --color-deep-learning-400: #f97316;
+  --color-deep-learning-500: #ea580c;
+
+  --color-docker-400: #38bdf8;
+  --color-docker-500: #0ea5e9;
 }
 
 * {

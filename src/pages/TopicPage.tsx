@@ -39,9 +39,11 @@ function SubTopicCard({
           <p className="mt-4 text-xs text-slate-500">
             Starts with: {lessons[0].title}
           </p>
-        ) : topicId === 'striver-a2z' ? (
-          <p className="mt-4 text-xs text-slate-500">Problems coming soon</p>
-        ) : null}
+        ) : (
+          <p className="mt-4 text-xs text-slate-500">
+            {topicId === 'striver-a2z' ? 'Problems coming soon' : 'Lessons coming soon'}
+          </p>
+        )}
         <span className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-accent-400">
           Open
           <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />

@@ -2,9 +2,35 @@ import type { Topic } from './types'
 import { generativeAiTopic } from './topics/generative-ai'
 import { pythonTopic } from './topics/python'
 import { striverA2zTopic } from './topics/striver-a2z'
+import { coreTopic } from './topics/core'
+import { systemDesignTopic } from './topics/system-design'
+import { webTechnologiesTopic } from './topics/web-technologies'
+import { databasesTopic } from './topics/databases'
+import { mathematicsTopic } from './topics/mathematics'
+import { dataVisualizationTopic } from './topics/data-visualization'
+import { dataScienceTopic } from './topics/data-science'
+import { machineLearningTopic } from './topics/machine-learning'
+import { naturalLanguageProcessingTopic } from './topics/natural-language-processing'
+import { deepLearningTopic } from './topics/deep-learning'
+import { dockerTopic } from './topics/docker'
 import { getSubTopicLessons } from './lesson-utils'
 
-export const topics: Topic[] = [pythonTopic, striverA2zTopic, generativeAiTopic]
+export const topics: Topic[] = [
+  pythonTopic,
+  striverA2zTopic,
+  mathematicsTopic,
+  dataVisualizationTopic,
+  dataScienceTopic,
+  machineLearningTopic,
+  naturalLanguageProcessingTopic,
+  deepLearningTopic,
+  generativeAiTopic,
+  coreTopic,
+  systemDesignTopic,
+  webTechnologiesTopic,
+  databasesTopic,
+  dockerTopic,
+]
 
 export function getTopic(topicId: string) {
   return topics.find((topic) => topic.id === topicId)
@@ -47,4 +73,3 @@ export function getAdjacentLessons(topicId: string, subTopicId: string, lessonId
 }
 
 export { getSubTopicLessons } from './lesson-utils'
-
