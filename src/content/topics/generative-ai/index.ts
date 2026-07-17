@@ -26,6 +26,18 @@ import { fineTuningSubTopic } from './fine-tuning'
 
 import { reinforcementLearningSubTopic } from './reinforcement-learning'
 
+import { helpfulnessSubTopic } from './benchmarks/helpfulness'
+
+import { secureTextGenerationSubTopic } from './benchmarks/secure-text-generation'
+
+import { toolCallingSubTopic } from './benchmarks/tool-calling'
+
+import { secureCodeGenerationSubTopic } from './benchmarks/secure-code-generation'
+
+import { mcpSubTopic } from './protocols/mcp'
+
+import { a2aSubTopic } from './protocols/a2a'
+
 
 
 export const generativeAiTopic: Topic = {
@@ -36,7 +48,7 @@ export const generativeAiTopic: Topic = {
 
   description:
 
-    'From model internals to RAG, model alignment (fine-tuning & RL), agents, observability, and inference optimization — build, specialize, align, deploy, and serve production LLM systems.',
+    'From model internals to RAG, alignment, benchmarks, agents, protocols (MCP & A2A), observability, and inference optimization — build, specialize, align, measure, connect, deploy, and serve production LLM systems.',
 
   accent: 'genai',
 
@@ -70,11 +82,61 @@ export const generativeAiTopic: Topic = {
 
     },
 
+    {
+
+      type: 'section',
+
+      section: {
+
+        id: 'benchmarks',
+
+        title: 'Benchmarks',
+
+        description:
+
+          'Measure capability, safety, tools, and code security — Helpfulness, Secure Text Generation, Tool Calling, and Secure Code Generation.',
+
+        subTopicIds: [
+
+          'helpfulness',
+
+          'secure-text-generation',
+
+          'tool-calling',
+
+          'secure-code-generation',
+
+        ],
+
+      },
+
+    },
+
     { type: 'subTopic', subTopicId: 'langchain' },
 
     { type: 'subTopic', subTopicId: 'langgraph' },
 
     { type: 'subTopic', subTopicId: 'agents' },
+
+    {
+
+      type: 'section',
+
+      section: {
+
+        id: 'protocols',
+
+        title: 'Protocols',
+
+        description:
+
+          'Open standards for AI systems — MCP (model ↔ tools & context) and A2A (agent ↔ agent) from basics to production.',
+
+        subTopicIds: ['mcp', 'a2a'],
+
+      },
+
+    },
 
     { type: 'subTopic', subTopicId: 'langfuse' },
 
@@ -116,11 +178,23 @@ export const generativeAiTopic: Topic = {
 
     reinforcementLearningSubTopic,
 
+    helpfulnessSubTopic,
+
+    secureTextGenerationSubTopic,
+
+    toolCallingSubTopic,
+
+    secureCodeGenerationSubTopic,
+
     langchainSubTopic,
 
     langgraphSubTopic,
 
     agentsSubTopic,
+
+    mcpSubTopic,
+
+    a2aSubTopic,
 
     langfuseSubTopic,
 
