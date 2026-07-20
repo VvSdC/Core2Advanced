@@ -12,7 +12,6 @@ import { dataScienceTopic } from './topics/data-science'
 import { machineLearningTopic } from './topics/machine-learning'
 import { naturalLanguageProcessingTopic } from './topics/natural-language-processing'
 import { deepLearningTopic } from './topics/deep-learning'
-import { dockerTopic } from './topics/docker'
 import { getSubTopicLessons } from './lesson-utils'
 
 export const topics: Topic[] = [
@@ -29,7 +28,6 @@ export const topics: Topic[] = [
   systemDesignTopic,
   webTechnologiesTopic,
   databasesTopic,
-  dockerTopic,
 ]
 
 export function getTopic(topicId: string) {
