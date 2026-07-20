@@ -42,7 +42,7 @@ const theoryLessons = [
   {
     id: 'slr-convergence-algorithm',
     title: 'Convergence Algorithm',
-    description: 'Gradient descent — learning rate, updates, and when training has converged.',
+    description: 'Gradient descent — learning rate, updates, worked example vs OLS on the same data.',
     readTime: '12 min',
     component: SlrConvergenceAlgorithm,
   },

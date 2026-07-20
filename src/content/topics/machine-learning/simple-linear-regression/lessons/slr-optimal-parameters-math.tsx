@@ -151,8 +151,9 @@ export function SlrOptimalParametersMath() {
         />
         <Callout variant="info" title="What gradient descent is doing">
           Each GD step moves opposite the gradient. When it converges, the gradient is ≈ 0 — the{' '}
-          <em>same</em> condition we solve exactly here. Math gives the destination; GD walks there
-          step by step.
+          <em>same</em> condition we solve exactly here. The{' '}
+          <strong className="text-white">Convergence Algorithm</strong> lesson walks the same four
+          points with gradient descent and shows θ₀=0.5, θ₁=2.3 — matching this OLS result.
         </Callout>
       </LessonSection>
 
