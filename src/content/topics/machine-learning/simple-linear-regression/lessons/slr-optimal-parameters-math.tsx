@@ -12,93 +12,98 @@ import {
 export function SlrOptimalParametersMath() {
   return (
     <LessonArticle>
-      <Definition term="Finding Optimal Parameters Mathematically">
+      <Callout variant="beginner" title="Please do not panic at the word ‘derivative’">
+        This lesson looks mathematical, but the story is everyday: we want the bottom of the cost
+        valley. At the bottom, the ground is flat. “Flat” in math-speak means “slope = 0.” We write
+        that condition, solve two school-level equations, and get θ₀ and θ₁. You can follow the
+        worked numbers even if calculus feels rusty — focus on the story first, then the arithmetic.
+      </Callout>
+
+      <Callout variant="info" title="Already derived">
+        The previous lesson showed how ∂J/∂θ₀ and ∂J/∂θ₁ come from the cost. Here we{' '}
+        <strong className="text-white">use</strong> those results: set them to zero and solve.
+      </Callout>
+
+      <Definition term="Finding the best line with math">
         <p>
-          The best θ₀ and θ₁ are the values that <strong className="text-white">minimize the cost</strong>{' '}
-          J(θ₀, θ₁). For simple linear regression with squared error, we can find them exactly by{' '}
-          <strong className="text-white">calculus</strong>: take partial derivatives of J, set them to{' '}
-          <strong className="text-white">zero</strong>, and solve the resulting equations.
+          The best θ₀ and θ₁ are the ones that make the cost J as small as possible. For our
+          squared-error cost, we can find them exactly: measure how J changes when we nudge each
+          parameter (that change-rate is a derivative), set those change-rates to{' '}
+          <strong className="text-white">zero</strong>, and solve.
         </p>
       </Definition>
 
-      <Callout variant="beginner" title="Big idea in one sentence">
-        At a minimum of a smooth bowl-shaped cost, the slope is flat — so the derivatives are 0. Solving
-        those “slope = 0” equations gives the optimal line.
-      </Callout>
-
-      <LessonSection title="Why differentiate the cost function?">
+      <LessonSection title="The valley story (read this twice)">
         <p className="text-slate-300">
-          Think of J as the height of a landscape over the (θ₀, θ₁) plane. Walking downhill means
-          following the slope. At the <strong className="text-white">bottom of the bowl</strong>, you
-          cannot go lower — the ground is level in every direction.
+          Remember the bowl from the cost lesson. Height = how wrong the line is. We want the lowest
+          point.
         </p>
+        <ContentStep number={1} title="On a hillside, the ground tilts">
+          <p className="text-slate-300">
+            If you take a tiny step and the cost goes up or down, the ground has a slope. That slope
+            is what ∂J/∂θ means: “how fast does cost change if I change this parameter a little?”
+          </p>
+        </ContentStep>
+        <ContentStep number={2} title="At the bottom, the ground is flat">
+          <p className="text-slate-300">
+            No tilt left, no tilt right. So both slopes are zero: ∂J/∂θ₀ = 0 and ∂J/∂θ₁ = 0. Those
+            two equations are enough to solve for two unknowns.
+          </p>
+        </ContentStep>
+        <ContentStep number={3} title="Why bother?">
+          <p className="text-slate-300">
+            Guessing lines forever is endless. Flat-ground equations give a direct answer for this
+            model. Later, gradient descent will <em>walk</em> to the same place without solving
+            algebra — same valley, different route.
+          </p>
+        </ContentStep>
         <Flowchart
-          title="Optimization logic"
+          title="Optimization logic in plain order"
           chart={`flowchart TB
-  A["Goal: make J as small as possible"] --> B["J is smooth and bowl-shaped for MSE"]
-  B --> C["At the minimum, slope = 0"]
-  C --> D["Compute ∂J/∂θ₀ and ∂J/∂θ₁"]
-  D --> E["Set both equal to 0"]
-  E --> F["Solve for θ₀ and θ₁"]
-  F --> G["Those θ values are optimal"]`}
+  A[Want lowest cost] --> B[Cost bowl has one bottom]
+  B --> C[At bottom: slopes are zero]
+  C --> D[Write slope formulas]
+  D --> E[Set them equal to 0]
+  E --> F[Solve for θ₀ and θ₁]`}
         />
-        <ContentStep number={1} title="Derivative = rate of change">
-          <p className="text-slate-300">
-            ∂J/∂θ₀ asks: “If I nudge θ₀ a tiny bit, how fast does cost change?” Same for θ₁. If the
-            derivative is positive, increasing that parameter raises cost; if negative, increasing it
-            lowers cost.
-          </p>
-        </ContentStep>
-        <ContentStep number={2} title="Zero derivative = candidate optimum">
-          <p className="text-slate-300">
-            Only when <span className="font-mono text-sm text-white">∂J/∂θⱼ = 0</span> is a small nudge
-            neither clearly uphill nor downhill — a stationary point. For MSE linear regression that
-            stationary point is the <strong className="text-white">unique global minimum</strong>{' '}
-            (convex bowl).
-          </p>
-        </ContentStep>
-        <ContentStep number={3} title="Why not just try many θ values?">
-          <p className="text-slate-300">
-            Brute force is endless. Setting derivatives to zero gives a{' '}
-            <strong className="text-white">direct algebraic path</strong> to the answer (for this
-            model). Gradient descent (next lessons) is the iterative cousin of the same idea.
-          </p>
-        </ContentStep>
-        <Callout variant="insight" title="Critical point checklist">
-          First derivative zero → critical point. For our J, the Hessian / bowl shape guarantees it is
-          a minimum — we are not stuck on a peak or saddle for this cost.
+        <Callout variant="tip" title="If symbols blur">
+          Skip ahead to the <strong className="text-white">worked example</strong> section, do the
+          arithmetic with the table, then come back. Many beginners understand faster with numbers
+          first.
         </Callout>
       </LessonSection>
 
-      <LessonSection title="Start from the cost function">
-        <p className="text-slate-300">Hypothesis and cost (same as earlier lessons):</p>
+      <LessonSection title="Start from the cost (same as last lesson)">
+        <p className="text-slate-300">
+          Prediction rule and cost — nothing new, just restating so the next steps have a clear
+          starting point:
+        </p>
         <div className="mt-3 space-y-3 rounded-xl border border-surface-600 bg-surface-900 p-4 font-mono text-sm text-white md:text-base">
-          <p>hθ(x) = θ₀ + θ₁ · x</p>
-          <p>J(θ₀, θ₁) = (1 / 2m) · Σᵢ₌₁ᵐ (θ₀ + θ₁ · x⁽ⁱ⁾ − y⁽ⁱ⁾)²</p>
+          <p>ŷ = θ₀ + θ₁ · x</p>
+          <p>J = (1 / 2m) · Σ (ŷ − y)²</p>
         </div>
         <p className="mt-3 text-slate-300">
-          The factor <span className="font-mono text-sm">1/2</span> cancels neatly when we
-          differentiate the square (chain rule brings a 2). The{' '}
-          <span className="font-mono text-sm">1/m</span> averages over m examples.
+          The 1/2 is only there so a later derivative looks cleaner. Mentally you can still think
+          “average of squared mistakes.”
         </p>
       </LessonSection>
 
-      <LessonSection title="Step 1 — differentiate with respect to θ₀">
+      <LessonSection title="Step 1 — how cost changes if we nudge θ₀">
         <p className="text-slate-300">
-          Differentiate inside the sum. Let residual e⁽ⁱ⁾ = θ₀ + θ₁x⁽ⁱ⁾ − y⁽ⁱ⁾. Then:
+          From the derivation lesson (chain rule on the squared error):
         </p>
         <div className="mt-3 space-y-2 rounded-xl border border-surface-600 bg-surface-900 p-4 font-mono text-sm leading-relaxed text-slate-200">
           <p className="text-white">∂J/∂θ₀ = (1/m) · Σᵢ (θ₀ + θ₁ · x⁽ⁱ⁾ − y⁽ⁱ⁾)</p>
-          <p className="text-slate-400"># because d(e²)/dθ₀ = 2e · 1, and the 2 cancels the 1/2</p>
+          <p className="text-slate-400"># average of (prediction − actual) across all rows</p>
         </div>
         <p className="mt-3 text-slate-300">
-          Set the derivative to zero (drop the always-positive 1/m — it does not change the root):
+          At the best line this slope is zero. So we require:
         </p>
         <div className="mt-3 rounded-xl border border-machine-learning-500/30 bg-machine-learning-500/10 p-4 font-mono text-sm text-white">
           Σᵢ (θ₀ + θ₁ · x⁽ⁱ⁾ − y⁽ⁱ⁾) = 0
         </div>
-        <p className="mt-3 text-slate-300">Expand the sum — this is{' '}
-          <strong className="text-white">normal equation #1</strong>:
+        <p className="mt-3 text-slate-300">
+          Expand the sum — this is equation #1 for the best line:
         </p>
         <div className="mt-3 rounded-xl border border-surface-600 bg-surface-900 p-4 font-mono text-sm text-white">
           m · θ₀ + θ₁ · Σ x⁽ⁱ⁾ = Σ y⁽ⁱ⁾
@@ -109,26 +114,31 @@ export function SlrOptimalParametersMath() {
         </Callout>
       </LessonSection>
 
-      <LessonSection title="Step 2 — differentiate with respect to θ₁">
+      <LessonSection title="Step 2 — how cost changes if we nudge θ₁">
+        <p className="text-slate-300">
+          Same question for slope: “If I make the line a bit steeper, how does cost change?”
+        </p>
         <div className="mt-1 space-y-2 rounded-xl border border-surface-600 bg-surface-900 p-4 font-mono text-sm leading-relaxed text-slate-200">
           <p className="text-white">∂J/∂θ₁ = (1/m) · Σᵢ (θ₀ + θ₁ · x⁽ⁱ⁾ − y⁽ⁱ⁾) · x⁽ⁱ⁾</p>
-          <p className="text-slate-400"># chain rule: d(e²)/dθ₁ = 2e · x</p>
+          <p className="text-slate-400"># average of (prediction − actual) × x</p>
         </div>
-        <p className="mt-3 text-slate-300">Set equal to zero:</p>
+        <p className="mt-3 text-slate-300">Set equal to zero for the best line:</p>
         <div className="mt-3 rounded-xl border border-machine-learning-500/30 bg-machine-learning-500/10 p-4 font-mono text-sm text-white">
           Σᵢ (θ₀ + θ₁ · x⁽ⁱ⁾ − y⁽ⁱ⁾) · x⁽ⁱ⁾ = 0
         </div>
         <p className="mt-3 text-slate-300">
-          Expand — <strong className="text-white">normal equation #2</strong>:
+          Expand — equation #2:
         </p>
         <div className="mt-3 rounded-xl border border-surface-600 bg-surface-900 p-4 font-mono text-sm text-white">
           θ₀ · Σ x⁽ⁱ⁾ + θ₁ · Σ (x⁽ⁱ⁾)² = Σ (x⁽ⁱ⁾ · y⁽ⁱ⁾)
         </div>
       </LessonSection>
 
-      <LessonSection title="Step 3 — closed-form solution">
+      <LessonSection title="Step 3 — ready-to-use formulas (OLS)">
         <p className="text-slate-300">
-          Two linear equations, two unknowns. Solving them (or using means) yields the famous formulas:
+          Solving those two equations gives formulas you can use with a calculator. People call this{' '}
+          <strong className="text-white">Ordinary Least Squares (OLS)</strong> — “least squares”
+          just means “smallest squared mistakes.”
         </p>
         <div className="mt-3 space-y-3 rounded-xl border border-surface-600 bg-surface-900 p-4 font-mono text-sm text-white md:text-base">
           <p>θ₁ = Σ (x⁽ⁱ⁾ − x̄)(y⁽ⁱ⁾ − ȳ) / Σ (x⁽ⁱ⁾ − x̄)²</p>
@@ -157,10 +167,10 @@ export function SlrOptimalParametersMath() {
         </Callout>
       </LessonSection>
 
-      <LessonSection title="Worked example — sample data">
+      <LessonSection title="Worked example — numbers only (this is the confidence builder)">
         <p className="text-slate-300">
-          Four training points. We will compute every sum, plug into the formulas, and read off
-          optimal θ₀, θ₁.
+          Four training points. We will fill a small table, plug into the formulas, and read off
+          θ₀ and θ₁. If the derivative section felt loud, start here.
         </p>
         <div className="mt-3 overflow-x-auto rounded-xl border border-surface-600">
           <table className="w-full text-sm text-slate-300">

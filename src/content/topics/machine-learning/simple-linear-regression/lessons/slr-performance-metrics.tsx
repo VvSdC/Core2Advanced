@@ -13,22 +13,34 @@ import {
 export function SlrPerformanceMetrics() {
   return (
     <LessonArticle>
-      <Definition term="Regression Performance Metrics">
+      <Callout variant="beginner" title="Why another set of numbers?">
+        Training used a cost to <em>fit</em> the line. Metrics answer a human question:{' '}
+        <strong className="text-white">“On average, how many marks (or dollars) are we off?”</strong>{' '}
+        You will use these three a lot: MAE, MSE, and RMSE. They are not new ideas — only different
+        ways to summarize the same mistakes.
+      </Callout>
+
+      <Definition term="Regression performance metrics">
         <p>
-          After (or while) fitting a line, we need numbers that say how good the predictions are.
-          The three metrics every regression beginner should know are{' '}
-          <strong className="text-white">MAE</strong>, <strong className="text-white">MSE</strong>, and{' '}
-          <strong className="text-white">RMSE</strong> — all built from the gaps between true{' '}
-          <span className="font-mono text-sm text-machine-learning-400">y</span> and predicted{' '}
-          <span className="font-mono text-sm text-machine-learning-400">ŷ</span>.
+          Numbers that summarize how far predictions ŷ sit from true values y. The beginner trio:
         </p>
+        <ul className="mt-2 list-disc space-y-1 pl-5 text-slate-300">
+          <li>
+            <strong className="text-white">MAE</strong> — average size of the mistake (easy to explain)
+          </li>
+          <li>
+            <strong className="text-white">MSE</strong> — average of squared mistakes (matches training)
+          </li>
+          <li>
+            <strong className="text-white">RMSE</strong> — square root of MSE (back in everyday units)
+          </li>
+        </ul>
       </Definition>
 
-      <Callout variant="beginner" title="Cost vs metric">
-        During training we often minimize a cost (like MSE / 2). After training we{' '}
-        <em>report</em> MAE, MSE, and RMSE on train and especially on{' '}
-        <strong className="text-white">holdout / test</strong> data so we know how the model
-        generalizes.
+      <Callout variant="tip" title="Cost vs metric (keep them straight)">
+        Cost helps the computer learn. Metrics help <em>you</em> report quality — especially on data
+        the model did not train on (a test set), so you know it works for new students, not only the
+        ones it already saw.
       </Callout>
 
       <LessonSection title="Residuals — the raw ingredient">

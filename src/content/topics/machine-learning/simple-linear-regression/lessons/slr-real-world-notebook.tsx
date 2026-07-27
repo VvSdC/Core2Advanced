@@ -11,19 +11,23 @@ import {
 export function SlrRealWorldNotebook() {
   return (
     <LessonArticle>
-      <Definition term="Production-Style Linear Regression Workflow">
+      <Callout variant="beginner" title="This is how day-to-day work usually looks">
+        You will not re-implement gradient descent every Monday. Engineers usually{' '}
+        <strong className="text-white">load data → look at it → fit a library model → check metrics</strong>.
+        This notebook shows that friendly path with the same study-hours story.
+      </Callout>
+
+      <Definition term="Real-world style workflow">
         <p>
-          Real ML engineers rarely start by coding gradient descent. They{' '}
-          <strong className="text-white">load data</strong>,{' '}
-          <strong className="text-white">explore</strong> it, check whether a linear relationship
-          makes sense, then fit a model with a trusted library (here: scikit-learn) and evaluate
-          honestly.
+          Load a table, explore it (EDA), check that a straight-line idea makes sense, fit{' '}
+          <code className="font-mono text-xs">LinearRegression</code> from scikit-learn, then report
+          how good the guesses are.
         </p>
       </Definition>
 
-      <Callout variant="beginner" title="Notebook mindset">
-        Same cell pattern as before: say what we are doing → run code → read the output. Imagine this
-        as a Jupyter notebook you would share in a pull request.
+      <Callout variant="tip" title="Same calm cell pattern">
+        English goal → code → output. If sklearn feels new, treat it as a ready-made “find the best
+        line” button — you already understand what that button is doing.
       </Callout>
 
       <LessonSection title="Project goal">
@@ -153,7 +157,8 @@ plt.ylabel("Exam score")
 plt.title("Hours vs Score")
 plt.grid(True, alpha=0.3)
 plt.show()`}
-          output={`[scatter plot: points rise roughly along a straight line from (1,45) to (10,108)]`}
+          imageSrc="/content/ml/slr-hours-vs-score.png"
+          imageAlt="Scatter plot of hours studied versus exam score, rising roughly in a straight line"
         >
           <p>
             A scatter plot is the fastest way to ask: “Does a straight line even make sense?” An upward
@@ -274,8 +279,9 @@ plt.show()
 
 print("full-data θ₀ =", round(model_all.intercept_, 4),
       " θ₁ =", round(model_all.coef_[0], 4))`}
-          output={`[scatter points with a straight crimson regression line through them]
-full-data θ₀ = 39.2667  θ₁ = 6.9152`}
+          imageSrc="/content/ml/slr-fit-line.png"
+          imageAlt="Scatter plot of study hours versus scores with a crimson fitted regression line"
+          output={`full-data θ₀ = 39.2667  θ₁ = 6.9152`}
         >
           <p>
             Stakeholders understand a chart faster than a table of coefficients. Notice full-data θ

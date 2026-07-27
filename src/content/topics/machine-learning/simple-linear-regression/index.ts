@@ -1,6 +1,7 @@
 import type { SubTopic } from '../../../types'
 import { SlrConvergenceAlgorithm } from './lessons/slr-convergence-algorithm'
 import { SlrCostFunction } from './lessons/slr-cost-function'
+import { SlrDerivingPartialDerivatives } from './lessons/slr-deriving-partial-derivatives'
 import { SlrEquations } from './lessons/slr-equations'
 import { SlrFromScratchNotebook } from './lessons/slr-from-scratch-notebook'
 import { SlrIntroduction } from './lessons/slr-introduction'
@@ -13,45 +14,53 @@ const theoryLessons = [
     id: 'slr-introduction',
     title: 'Introduction',
     description:
-      'What simple linear regression is — one feature, one line, and why it is the best first model.',
-    readTime: '9 min',
+      'Beginner-first: what the line means in plain English, with a study-hours story and no panic.',
+    readTime: '14 min',
     component: SlrIntroduction,
   },
   {
     id: 'slr-equations',
     title: 'Simple Linear Regression Equations',
-    description: 'ŷ = θ₀ + θ₁x — parameters, predictions, and a peek at vector form.',
-    readTime: '10 min',
+    description: 'Meet x, y, ŷ, θ₀, θ₁ slowly — then plug-and-play predictions.',
+    readTime: '14 min',
     component: SlrEquations,
   },
   {
     id: 'slr-cost-function',
     title: 'Cost Function',
-    description: 'Mean Squared Error — how we score a line and why we square residuals.',
-    readTime: '10 min',
+    description: 'A friendly scorecard for mistakes — why we square errors, with a tiny hand example.',
+    readTime: '13 min',
     component: SlrCostFunction,
+  },
+  {
+    id: 'slr-deriving-partial-derivatives',
+    title: 'Deriving the Partial Derivatives',
+    description:
+      'From J to ∂J/∂θ₀ and ∂J/∂θ₁ — chain rule, why the 1/2 cancels, and a tiny numeric check.',
+    readTime: '16 min',
+    component: SlrDerivingPartialDerivatives,
   },
   {
     id: 'slr-optimal-parameters-math',
     title: 'Optimal Parameters (Math)',
     description:
-      'Differentiate the cost, set derivatives to zero, derive normal equations, and solve a full numeric example.',
-    readTime: '16 min',
+      'Set the derived derivatives to zero, get OLS formulas, and solve a full numeric example.',
+    readTime: '18 min',
     component: SlrOptimalParametersMath,
   },
   {
     id: 'slr-convergence-algorithm',
     title: 'Convergence Algorithm',
-    description: 'Gradient descent — learning rate, updates, worked example vs OLS on the same data.',
-    readTime: '12 min',
+    description:
+      'Walking downhill in plain English, then a worked GD example that matches OLS.',
+    readTime: '16 min',
     component: SlrConvergenceAlgorithm,
   },
   {
     id: 'slr-performance-metrics',
     title: 'Performance Metrics',
-    description:
-      'MAE, MSE, and RMSE — how to measure regression quality, when to use each, and how to code them.',
-    readTime: '12 min',
+    description: 'MAE, MSE, and RMSE explained as everyday “how far off are we?” scores.',
+    readTime: '13 min',
     component: SlrPerformanceMetrics,
   },
 ]
@@ -79,7 +88,7 @@ export const simpleLinearRegressionSubTopic: SubTopic = {
   id: 'simple-linear-regression',
   title: 'Simple Linear Regression',
   description:
-    'Fit a straight line — equations, cost, exact math for optimal θ, gradient descent, metrics, then notebooks.',
+    'Beginner-friendly path to fitting a straight line — stories first, then gentle math, metrics, and notebooks.',
   lessonSections: [
     {
       id: 'theory',

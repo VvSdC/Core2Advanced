@@ -89,7 +89,8 @@ plt.ylabel("y")
 plt.title("Curved pattern — candidate for polynomial regression")
 plt.grid(True, alpha=0.3)
 plt.show()`}
-          output={`[scatter: high at both ends, low near x=0 — U-shaped trend]`}
+          imageSrc="/content/ml/poly-curve-scatter.png"
+          imageAlt="Scatter plot showing a U-shaped curved pattern — high at both ends, low near zero"
         >
           <p>This is the “when to use polynomial” visual: a bend, not a straight cloud.</p>
         </NotebookCell>
@@ -165,6 +166,29 @@ R²  : 0.9995`}
 
         <NotebookCell
           cell={7}
+          title="Compare linear vs polynomial visually"
+          code={`xs = np.linspace(df["x"].min(), df["x"].max(), 100)
+plt.figure(figsize=(6, 4))
+plt.scatter(df["x"], df["y"], label="data")
+plt.plot(xs, lin.predict(xs.reshape(-1, 1)), "--", label="linear fit")
+plt.plot(xs, model.predict(poly.transform(xs.reshape(-1, 1))), label="poly degree 2")
+plt.xlabel("x")
+plt.ylabel("y")
+plt.legend()
+plt.title("Linear vs Polynomial Fit")
+plt.grid(True, alpha=0.3)
+plt.show()`}
+          imageSrc="/content/ml/poly-linear-vs-quad.png"
+          imageAlt="Scatter plot with a dashed linear fit missing the curve and a solid degree-2 polynomial fitting the U-shape"
+        >
+          <p>
+            The dashed line misses the bend. The solid curve follows the data — this is why degree 2
+            wins on metrics.
+          </p>
+        </NotebookCell>
+
+        <NotebookCell
+          cell={8}
           title="OLS check — normal equation on Φ"
           code={`Phi_bias = np.column_stack([np.ones(len(df)), df["x"], df["x"] ** 2])
 theta = np.linalg.solve(Phi_bias.T @ Phi_bias, Phi_bias.T @ y.to_numpy())
@@ -175,7 +199,7 @@ print("θ from (ΦᵀΦ)θ = Φᵀy:", np.round(theta, 4))`}
         </NotebookCell>
 
         <NotebookCell
-          cell={8}
+          cell={9}
           title="Train / test evaluation"
           code={`X_train, X_test, y_train, y_test = train_test_split(
     X, y, test_size=0.25, random_state=42
@@ -207,7 +231,7 @@ R²  : 0.9794`}
         </NotebookCell>
 
         <NotebookCell
-          cell={9}
+          cell={10}
           title="Predict for a new x"
           code={`x_new = pd.DataFrame({"x": [1.5]})
 phi_new = poly.transform(x_new)

@@ -11,17 +11,24 @@ import {
 export function SlrFromScratchNotebook() {
   return (
     <LessonArticle>
-      <Definition term="From-Scratch Simple Linear Regression">
+      <Callout variant="beginner" title="You already know the story — now we type it">
+        Same hours → score idea as the theory lessons. Here we only translate it into small Python
+        cells. If a cell feels long, read the English goal above the code first, then glance at the
+        output. You do not need to memorize every line.
+      </Callout>
+
+      <Definition term="From-scratch notebook">
         <p>
-          This notebook builds simple linear regression <strong className="text-white">by hand</strong>{' '}
-          on 10 rows: study hours → exam score. We implement predictions, MSE, and batch gradient
-          descent with plain Python — no scikit-learn yet.
+          We build the line <strong className="text-white">by hand</strong> on 10 rows: predict,
+          measure cost, walk downhill with gradient descent — plain Python, no scikit-learn yet.
         </p>
       </Definition>
 
-      <Callout variant="beginner" title="How to read this notebook">
-        Each cell has a short goal, then code (<span className="font-mono text-xs text-machine-learning-400">In [n]</span>),
-        then what you would see when you run it (<span className="font-mono text-xs text-emerald-400">Out [n]</span>).
+      <Callout variant="tip" title="How to read each cell">
+        Goal in English → code (
+        <span className="font-mono text-xs text-machine-learning-400">In [n]</span>) → result (
+        <span className="font-mono text-xs text-emerald-400">Out [n]</span>). Treat it like a calm
+        cooking recipe, not a test.
       </Callout>
 
       <LessonSection title="Dataset — 10 labeled examples">

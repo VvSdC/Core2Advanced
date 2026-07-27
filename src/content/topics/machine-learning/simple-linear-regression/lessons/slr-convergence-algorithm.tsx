@@ -12,38 +12,78 @@ import {
 export function SlrConvergenceAlgorithm() {
   return (
     <LessonArticle>
-      <Definition term="Gradient Descent">
+      <Callout variant="beginner" title="Think ‘walking downhill,’ not ‘scary algorithm’">
+        Gradient descent sounds advanced. The habit is simple:{' '}
+        <strong className="text-white">look which way cost increases, then step the other way</strong>.
+        Repeat until you are basically at the bottom. Baby steps toward a better line.
+      </Callout>
+
+      <Definition term="Gradient descent (plain English)">
         <p>
-          <strong className="text-white">Gradient descent</strong> is the convergence algorithm we
-          use to minimize the cost. Repeatedly: compute how J changes with each parameter (the{' '}
-          <strong className="text-white">gradient</strong>), then take a small step opposite that
-          direction — downhill on the cost surface.
+          Start with any rough line (any θ₀, θ₁). Measure how wrong it is. Nudge the parameters a
+          little so the line gets less wrong. Do this many times. When further nudges barely help,
+          we say the algorithm has <strong className="text-white">converged</strong> — the line has
+          settled.
         </p>
       </Definition>
 
-      <Callout variant="beginner" title="How this relates to the math lesson">
-        Setting ∂J/∂θ = 0 gives the exact optimum in one shot. Gradient descent uses the{' '}
-        <em>same</em> derivatives, but walks downhill iteratively — essential when a closed form is
-        hard or impossible (many modern models).
-      </Callout>
+      <LessonSection title="Why learn this if OLS already works?">
+        <p className="text-slate-300">
+          For simple linear regression, the math shortcut (OLS) can jump straight to the answer.
+          Gradient descent is still worth learning because:
+        </p>
+        <ContentStep number={1} title="It uses the same ‘slope of the cost’ idea">
+          <p className="text-slate-300">
+            OLS sets slopes to zero and solves. GD reads the slopes and walks. Same valley.
+          </p>
+        </ContentStep>
+        <ContentStep number={2} title="It scales to big models">
+          <p className="text-slate-300">
+            Neural nets do not have a tidy one-line formula. They still walk downhill like this.
+          </p>
+        </ContentStep>
+        <Callout variant="tip" title="Promise for this lesson">
+          We will first describe the walk in words, then show the tiny update rule, then run a full
+          numeric example on the same four points as the OLS lesson — so you can see both methods
+          agree.
+        </Callout>
+      </LessonSection>
 
-      <LessonSection title="The update rule">
-        <p className="mt-1 font-mono text-sm text-white md:text-base">
-          θⱼ := θⱼ − α · ∂J/∂θⱼ
+      <LessonSection title="The update rule (gentle)">
+        <p className="text-slate-300">
+          Each step does this for every parameter:
+        </p>
+        <p className="mt-2 font-mono text-sm text-white md:text-base">
+          new θ = old θ − (step size) × (how cost changes if θ increases)
         </p>
         <p className="mt-3 text-slate-300">
-          α (alpha) is the <strong className="text-white">learning rate</strong> — step size. Too
-          small → slow learning. Too large → overshoot and diverge.
+          Written compactly:
         </p>
+        <p className="mt-2 font-mono text-sm text-white md:text-base">
+          θⱼ := θⱼ − α · ∂J/∂θⱼ
+        </p>
+        <ContentStep number={1} title="α (alpha) = step size / learning rate">
+          <p className="text-slate-300">
+            Tiny α → slow careful walk. Huge α → you jump past the bottom and bounce around. We pick
+            something moderate and watch the cost fall smoothly.
+          </p>
+        </ContentStep>
+        <ContentStep number={2} title="Why minus the slope?">
+          <p className="text-slate-300">
+            If increasing θ raises cost (positive slope), we subtract — we move θ down. If increasing
+            θ lowers cost (negative slope), subtracting a negative moves θ up. Either way we go
+            downhill.
+          </p>
+        </ContentStep>
         <Flowchart
           title="One training iteration"
           chart={`flowchart TB
-  A[Current θ₀, θ₁] --> B[Predict all ŷ]
-  B --> C[Compute gradients ∂J/∂θ]
-  C --> D["θ ← θ − α · gradient"]
-  D --> E{Cost still dropping?}
+  A[Current line θ₀, θ₁] --> B[Predict all points]
+  B --> C[Measure slopes of cost]
+  C --> D[Nudge θ a little downhill]
+  D --> E{Cost still clearly dropping?}
   E -- Yes --> B
-  E -- No --> F[Stop — converged]`}
+  E -- No --> F[Stop — good enough line]`}
         />
       </LessonSection>
 
