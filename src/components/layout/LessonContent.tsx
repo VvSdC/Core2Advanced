@@ -31,9 +31,13 @@ export function LessonContent({ topic, subTopic, lesson, previous, next }: Lesso
       >
         <header className="border-b border-surface-700/80 bg-surface-900/30 px-4 py-6 md:px-8 md:py-8">
           <div className="flex flex-wrap items-center gap-2 text-sm text-slate-500">
-            <span className="text-python-400">{topic.title}</span>
+            <Link to={`/${topic.id}`} className="text-python-400 transition-colors hover:text-python-300">
+              {topic.title}
+            </Link>
             <span>/</span>
-            <span>{subTopic.title}</span>
+            <Link to={basePath} className="transition-colors hover:text-slate-300">
+              {subTopic.title}
+            </Link>
           </div>
           <h1 className="mt-3 text-2xl font-bold tracking-tight text-white md:text-3xl">
             {lesson.title}

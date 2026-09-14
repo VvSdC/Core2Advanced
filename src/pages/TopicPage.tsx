@@ -15,7 +15,9 @@ function SubTopicCard({
   index: number
 }) {
   const lessons = getSubTopicLessons(subTopic)
-  const itemLabel = topicId === 'striver-a2z' ? 'problem' : 'lesson'
+  const sectionCount = subTopic.lessonSections?.length ?? 0
+  const itemLabel = topicId === 'striver-a2z' ? 'problem' : sectionCount > 0 ? 'section' : 'lesson'
+  const itemCount = sectionCount > 0 ? sectionCount : lessons.length
 
   return (
     <motion.div
@@ -28,14 +30,19 @@ function SubTopicCard({
         className="group flex h-full flex-col rounded-2xl border border-surface-600 bg-surface-900/60 p-6 transition-all hover:border-accent-500/40 hover:bg-surface-800/60"
       >
         <p className="text-xs font-semibold uppercase tracking-wider text-accent-400">
-          {lessons.length} {itemLabel}
-          {lessons.length !== 1 ? 's' : ''}
+          {itemCount} {itemLabel}
+          {itemCount !== 1 ? 's' : ''}
+          {sectionCount > 0 ? ` · ${lessons.length} lessons` : ''}
         </p>
         <h2 className="mt-2 text-xl font-semibold text-white transition-colors group-hover:text-accent-400">
           {subTopic.title}
         </h2>
         <p className="mt-3 flex-1 text-sm leading-relaxed text-slate-400">{subTopic.description}</p>
-        {lessons[0] ? (
+        {sectionCount > 0 && subTopic.lessonSections?.[0] ? (
+          <p className="mt-4 text-xs text-slate-500">
+            Starts with: {subTopic.lessonSections[0].title}
+          </p>
+        ) : lessons[0] ? (
           <p className="mt-4 text-xs text-slate-500">
             Starts with: {lessons[0].title}
           </p>

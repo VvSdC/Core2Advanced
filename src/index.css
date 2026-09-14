@@ -55,6 +55,9 @@
 
   --color-docker-400: #38bdf8;
   --color-docker-500: #0ea5e9;
+
+  --color-aws-de-400: #fb923c;
+  --color-aws-de-500: #f97316;
 }
 
 * {

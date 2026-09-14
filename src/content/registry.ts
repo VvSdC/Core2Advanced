@@ -12,6 +12,7 @@ import { dataScienceTopic } from './topics/data-science'
 import { machineLearningTopic } from './topics/machine-learning'
 import { naturalLanguageProcessingTopic } from './topics/natural-language-processing'
 import { deepLearningTopic } from './topics/deep-learning'
+import { awsDataEngineeringTopic } from './topics/aws-data-engineering'
 import { getSubTopicLessons } from './lesson-utils'
 
 export const topics: Topic[] = [
@@ -24,6 +25,7 @@ export const topics: Topic[] = [
   naturalLanguageProcessingTopic,
   deepLearningTopic,
   generativeAiTopic,
+  awsDataEngineeringTopic,
   coreTopic,
   systemDesignTopic,
   webTechnologiesTopic,

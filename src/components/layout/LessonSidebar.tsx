@@ -1,4 +1,4 @@
-import { NavLink } from 'react-router-dom'
+import { Link, NavLink } from 'react-router-dom'
 import { ChevronRight } from 'lucide-react'
 import { getSubTopicLessons } from '../../content/registry'
 import type { SubTopic, Topic } from '../../content/types'
@@ -98,15 +98,31 @@ export function LessonSidebar({ topic, subTopic, activeLessonId }: LessonSidebar
     subTopic.lessonSections?.length || subTopic.lessonTracks?.length,
   )
   const flatLessons = getSubTopicLessons(subTopic)
+  const hubPath = `/${topic.id}/${subTopic.id}`
 
   return (
     <aside className="flex h-full flex-col border-r border-surface-700 bg-surface-900/50">
       <div className="border-b border-surface-700 p-4 md:p-5">
-        <p className="text-xs font-semibold uppercase tracking-wider text-python-400">
+        <Link
+          to={`/${topic.id}`}
+          className="text-xs font-semibold uppercase tracking-wider text-python-400 transition-colors hover:text-python-300"
+        >
           {topic.title}
-        </p>
-        <h2 className="mt-1 text-lg font-semibold text-white">{subTopic.title}</h2>
+        </Link>
+        <Link to={hubPath} className="mt-1 block">
+          <h2 className="text-lg font-semibold text-white transition-colors hover:text-accent-400">
+            {subTopic.title}
+          </h2>
+        </Link>
         <p className="mt-2 text-sm leading-relaxed text-slate-400">{subTopic.description}</p>
+        {hasGroupedLessons ? (
+          <Link
+            to={hubPath}
+            className="mt-3 inline-flex text-xs font-medium text-accent-400 transition-colors hover:text-accent-300"
+          >
+            All sections →
+          </Link>
+        ) : null}
       </div>
 
       <nav className="flex-1 overflow-y-auto p-3 md:p-4">

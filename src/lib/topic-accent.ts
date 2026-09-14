@@ -72,6 +72,11 @@ export const topicAccentStyles: Record<
     hover: 'group-hover:text-docker-400',
     border: 'hover:border-docker-500/40',
   },
+  'aws-data-engineering': {
+    text: 'text-aws-de-400',
+    hover: 'group-hover:text-aws-de-400',
+    border: 'hover:border-aws-de-500/40',
+  },
 }
 
 export function getTopicAccent(accent: string) {

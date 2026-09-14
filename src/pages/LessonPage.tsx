@@ -3,6 +3,7 @@ import { getAdjacentLessons, getLesson, getSubTopic, getSubTopicLessons, getTopi
 import { LessonContent } from '../components/layout/LessonContent'
 import { LessonSidebar } from '../components/layout/LessonSidebar'
 import { SubTopicEmptyState } from '../components/layout/SubTopicEmptyState'
+import { SubTopicSectionsHub } from '../components/layout/SubTopicSectionsHub'
 
 export function LessonPage() {
   const navigate = useNavigate()
@@ -24,6 +25,12 @@ export function LessonPage() {
     if (lessons.length === 0) {
       return <SubTopicEmptyState topic={topic} subTopic={subTopic} />
     }
+
+    // Libraries with sidebar sections (NumPy, Pandas): show section cards first
+    if (subTopic.lessonSections?.length) {
+      return <SubTopicSectionsHub topic={topic} subTopic={subTopic} />
+    }
+
     const firstLesson = lessons[0]
     if (firstLesson) {
       return (
