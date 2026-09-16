@@ -3,6 +3,7 @@ import { ArrowLeft, ArrowRight, Clock } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { useLayoutEffect } from 'react'
 import type { Lesson, SubTopic, Topic } from '../../content/types'
+import { ErrorBoundary } from './ErrorBoundary'
 
 interface LessonContentProps {
   topic: Topic
@@ -53,7 +54,9 @@ export function LessonContent({ topic, subTopic, lesson, previous, next }: Lesso
 
         <div className="px-4 py-8 md:px-8 md:py-10">
           <div className="mx-auto max-w-3xl">
-            <LessonComponent />
+            <ErrorBoundary resetKey={lesson.id}>
+              <LessonComponent />
+            </ErrorBoundary>
           </div>
         </div>
       </motion.div>

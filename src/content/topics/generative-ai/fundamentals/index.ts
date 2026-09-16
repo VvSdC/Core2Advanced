@@ -1,16 +1,48 @@
 import type { SubTopic } from '../../../types'
+
+// Start Here
+import { WhatIsGenerativeAI } from './lessons/what-is-generative-ai'
+import { WhatIsAToken } from './lessons/what-is-a-token'
 import { HowLanguageModelsWork } from './lessons/how-language-models-work'
+
+// Inside the Model
+import { NeuralNetworksPrimer } from './lessons/neural-networks-primer'
+import { EmbeddingsAndVectorSpace } from './lessons/embeddings-and-vector-space'
+import { TheTransformerArchitecture } from './lessons/the-transformer-architecture'
+import { SelfAttentionExplained } from './lessons/self-attention-explained'
+import { WhatAreModelParameters } from './lessons/what-are-model-parameters'
+
+// The Bigger Picture
+import { HowLlmsAreTrained } from './lessons/how-llms-are-trained'
+import { ContextWindowsAndKvCache } from './lessons/context-windows-and-kv-cache'
+import { SmallLanguageModels } from './lessons/small-language-models'
 import { LargeLanguageModels } from './lessons/large-language-models'
 import { MultimodalModels } from './lessons/multimodal-models'
-import { SmallLanguageModels } from './lessons/small-language-models'
-import { WhatAreModelParameters } from './lessons/what-are-model-parameters'
+
+// Research Papers
 import { AttentionIsAllYouNeed } from './lessons/papers/attention-is-all-you-need'
 import { ChinchillaScalingLaws } from './lessons/papers/chinchilla-scaling-laws'
 import { ClipMultimodalLearning } from './lessons/papers/clip-multimodal-learning'
 import { LlamaOpenEfficientModels } from './lessons/papers/llama-open-efficient-models'
 import { ScalingLawsForLanguageModels } from './lessons/papers/scaling-laws-for-language-models'
 
-const coreConceptLessons = [
+const startHereLessons = [
+  {
+    id: 'what-is-generative-ai',
+    title: 'What Is Generative AI?',
+    description:
+      'Generative vs discriminative AI, what "generate" means, the modalities, and the one prediction loop everything is built on. Start here — no ML background needed.',
+    readTime: '10 min',
+    component: WhatIsGenerativeAI,
+  },
+  {
+    id: 'what-is-a-token',
+    title: 'Tokens & Tokenization',
+    description:
+      'What a token really is, why models see subwords instead of letters or words, how BPE builds the vocabulary, and why tokens drive cost, context, and speed.',
+    readTime: '12 min',
+    component: WhatIsAToken,
+  },
   {
     id: 'how-language-models-work',
     title: 'How Language Models Work',
@@ -19,13 +51,67 @@ const coreConceptLessons = [
     readTime: '12 min',
     component: HowLanguageModelsWork,
   },
+]
+
+const insideTheModelLessons = [
+  {
+    id: 'neural-networks-primer',
+    title: 'Neural Networks: A Primer',
+    description:
+      'Neurons, weights, biases, activations, layers, and the predict-measure-nudge training loop — the minimum machinery you need, explained without calculus.',
+    readTime: '10 min',
+    component: NeuralNetworksPrimer,
+  },
+  {
+    id: 'embeddings-and-vector-space',
+    title: 'Embeddings & Vector Space',
+    description:
+      'How words become vectors of meaning, cosine similarity, "king − man + woman ≈ queen", and static vs contextual embeddings — the bridge from text to math.',
+    readTime: '11 min',
+    component: EmbeddingsAndVectorSpace,
+  },
+  {
+    id: 'the-transformer-architecture',
+    title: 'The Transformer Architecture',
+    description:
+      'The full map of a decoder-only LLM: embeddings, positional encoding, the attention + feed-forward block, residuals, layer norm, and the output head.',
+    readTime: '14 min',
+    component: TheTransformerArchitecture,
+  },
+  {
+    id: 'self-attention-explained',
+    title: 'Self-Attention, Step by Step',
+    description:
+      'Query, Key, Value explained with the library analogy; the four steps of attention worked by hand; multi-head attention and causal masking.',
+    readTime: '14 min',
+    component: SelfAttentionExplained,
+  },
   {
     id: 'what-are-model-parameters',
-    title: 'What Are Model Parameters?',
+    title: 'Model Parameters, Weights & Memory',
     description:
-      'What it means when a model has billions or trillions of parameters — weights, memory, and capacity.',
+      'What it means when a model has billions or trillions of parameters — weights, capacity, and how parameter count maps to memory.',
     readTime: '10 min',
     component: WhatAreModelParameters,
+  },
+]
+
+const biggerPictureLessons = [
+  {
+    id: 'how-llms-are-trained',
+    title: 'How LLMs Are Trained',
+    description:
+      'Pretraining (predict the next token at scale) then post-training (SFT + RLHF) — how a raw autocomplete becomes a helpful assistant, and why a knowledge cutoff exists.',
+    readTime: '13 min',
+    component: HowLlmsAreTrained,
+  },
+  {
+    id: 'context-windows-and-kv-cache',
+    title: 'Context Windows & the KV Cache',
+    description:
+      'The model\'s working memory in tokens, the quadratic cost of long context, "lost in the middle", and how the KV cache makes generation fast.',
+    readTime: '12 min',
+    component: ContextWindowsAndKvCache,
   },
   {
     id: 'small-language-models',
@@ -92,12 +178,22 @@ export const fundamentalsSubTopic: SubTopic = {
   id: 'fundamentals',
   title: 'Fundamentals',
   description:
-    'How language models work, what parameters mean, and the SLM/LLM/multimodal landscape — plus 5 curated papers on architecture and scaling.',
+    'Start from zero: tokens, how LLMs predict, neural networks, embeddings, the Transformer and attention, parameters, training, and context windows — a sequential path that assumes no ML background, plus 5 curated papers.',
   lessonSections: [
     {
-      id: 'core-concepts',
-      title: 'Core Concepts',
-      lessons: coreConceptLessons,
+      id: 'start-here',
+      title: 'Start Here',
+      lessons: startHereLessons,
+    },
+    {
+      id: 'inside-the-model',
+      title: 'Inside the Model',
+      lessons: insideTheModelLessons,
+    },
+    {
+      id: 'the-bigger-picture',
+      title: 'The Bigger Picture',
+      lessons: biggerPictureLessons,
     },
     {
       id: 'research-papers',
