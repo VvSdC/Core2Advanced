@@ -9,42 +9,12 @@ import { cloudWatchSubTopic } from './cloudwatch'
 import { snsSubTopic } from './sns'
 import { athenaSubTopic } from './athena'
 import { redshiftSubTopic } from './redshift'
-
-const rdsSubTopic = createEmptySubTopic(
-  'rds',
-  'RDS',
-  'Managed relational databases — engines, Multi-AZ, replicas, and security.',
-)
-
-const glueSubTopic = createEmptySubTopic(
-  'glue',
-  'AWS Glue',
-  'Serverless ETL — crawlers, Spark jobs, DynamicFrames, and workflows.',
-)
-
-const vpcSubTopic = createEmptySubTopic(
-  'vpc',
-  'VPC',
-  'Private networking — subnets, gateways, endpoints, and data-plane isolation.',
-)
-
-const eventBridgeSubTopic = createEmptySubTopic(
-  'eventbridge',
-  'EventBridge',
-  'Event buses, schedules, and event-driven data pipeline wiring.',
-)
-
-const cloudFormationSubTopic = createEmptySubTopic(
-  'cloudformation',
-  'CloudFormation',
-  'Infrastructure as Code — templates, stacks, and reusable DE platforms.',
-)
-
-const dynamoDbSubTopic = createEmptySubTopic(
-  'dynamodb',
-  'DynamoDB',
-  'Managed NoSQL — keys, indexes, streams, and when to choose it.',
-)
+import { rdsSubTopic } from './rds'
+import { glueSubTopic } from './glue'
+import { vpcSubTopic } from './vpc'
+import { eventBridgeSubTopic } from './eventbridge'
+import { cloudFormationSubTopic } from './cloudformation'
+import { dynamoDbSubTopic } from './dynamodb'
 
 const sqsSubTopic = createEmptySubTopic(
   'sqs',
