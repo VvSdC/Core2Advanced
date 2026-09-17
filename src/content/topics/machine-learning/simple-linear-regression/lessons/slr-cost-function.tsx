@@ -1,12 +1,14 @@
 import {
   Callout,
   ContentStep,
+  CurvePlot,
   Definition,
   Example,
   Flowchart,
   KeyTakeaways,
   LessonArticle,
   LessonSection,
+  ScatterPlot,
 } from '../../../../../components/content'
 
 export function SlrCostFunction() {
@@ -104,6 +106,19 @@ export function SlrCostFunction() {
 {`x: 1, 2, 3
 y: 1, 3, 5`}
         </Example>
+        <ScatterPlot
+          title="The rough line ŷ = x and its mistakes (residuals)"
+          points={[
+            { x: 1, y: 1 },
+            { x: 2, y: 3 },
+            { x: 3, y: 5 },
+          ]}
+          line={{ slope: 1, intercept: 0 }}
+          showResiduals
+          xLabel="x"
+          yLabel="y"
+          caption="Each red dashed segment is one mistake (residual): the gap between a real dot and the line. The cost function squares these gaps and averages them."
+        />
         <ContentStep number={1} title="Predictions">
           <p className="text-slate-300">ŷ = 1, 2, 3</p>
         </ContentStep>
@@ -135,6 +150,15 @@ J = 0   # perfect on this toy set`}
           Imagine standing in a smooth valley. Left-right is θ₀, forward-back is θ₁, and height is
           cost J. A bad line puts you high on the hillside. A good line is down in the valley floor.
         </p>
+        <CurvePlot
+          title="The cost 'bowl': how J changes as we tilt the slope θ₁"
+          fn={(t1) => (7 / 3) * (t1 - 2) ** 2}
+          domain={[0, 4]}
+          markMin={{ x: 2, y: 0 }}
+          xLabel="slope θ₁ (intercept fixed at its best value)"
+          yLabel="cost J"
+          caption="For this toy data the perfect slope is θ₁ = 2, where the bowl bottoms out at J = 0. Any other slope climbs the walls of the bowl — a higher cost. Training just finds the bottom."
+        />
         <Flowchart
           title="Training = walking downhill"
           chart={`flowchart TB

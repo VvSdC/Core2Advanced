@@ -16,6 +16,7 @@ import { WhatAreModelParameters } from './lessons/what-are-model-parameters'
 import { HowLlmsAreTrained } from './lessons/how-llms-are-trained'
 import { ContextWindowsAndKvCache } from './lessons/context-windows-and-kv-cache'
 import { PrefillDecodeAndLatency } from './lessons/prefill-decode-and-latency'
+import { PromptCaching } from './lessons/prompt-caching'
 import { SmallLanguageModels } from './lessons/small-language-models'
 import { LargeLanguageModels } from './lessons/large-language-models'
 import { MultimodalModels } from './lessons/multimodal-models'
@@ -121,6 +122,14 @@ const biggerPictureLessons = [
       'The two phases behind every answer — prefill (parallel prompt processing) and decode (autoregressive, cache-reusing generation) — plus the TTFT and TPOT metrics that describe response speed.',
     readTime: '12 min',
     component: PrefillDecodeAndLatency,
+  },
+  {
+    id: 'prompt-caching',
+    title: 'Prompt Caching: Basics to Advanced',
+    description:
+      'Reuse the prefill KV cache across requests — why a shared prefix is the whole trick, how to structure prompts for it, and how to implement it with OpenAI, Anthropic, Gemini, and self-hosted vLLM, plus cost math, advanced patterns, and pitfalls.',
+    readTime: '16 min',
+    component: PromptCaching,
   },
   {
     id: 'small-language-models',

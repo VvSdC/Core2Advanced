@@ -7,6 +7,7 @@ import {
   KeyTakeaways,
   LessonArticle,
   LessonSection,
+  ScatterPlot,
 } from '../../../../../components/content'
 
 export function SlrIntroduction() {
@@ -68,6 +69,20 @@ E         5               74`}
           Simple linear regression draws one straight line that stays as close as possible to those
           dots.
         </p>
+        <ScatterPlot
+          title="The five students and one straight line"
+          points={[
+            { x: 1, y: 45 },
+            { x: 2, y: 52 },
+            { x: 3, y: 61 },
+            { x: 4, y: 68 },
+            { x: 5, y: 74 },
+          ]}
+          line={{ slope: 7, intercept: 40 }}
+          xLabel="Hours studied"
+          yLabel="Exam score"
+          caption="Blue dots are the real students. The green line is our guess machine — it does not touch every dot, but it stays close to all of them."
+        />
         <ContentStep number={1} title="The dots are facts">
           <p className="text-slate-300">
             Real students, real scores. We do not change the dots. We only choose the line.

@@ -1,6 +1,7 @@
 import {
   Callout,
   ContentStep,
+  CurvePlot,
   Definition,
   Example,
   Flowchart,
@@ -10,6 +11,16 @@ import {
 } from '../../../../../components/content'
 
 export function SlrConvergenceAlgorithm() {
+  // Cost as a function of the slope θ₁ (intercept held at its optimal 0.5),
+  // for the four training points used throughout this sub-topic.
+  const costVsSlope = (t1: number) =>
+    (1 / 8) *
+    ((0.5 + t1 * 1 - 3) ** 2 +
+      (0.5 + t1 * 2 - 5) ** 2 +
+      (0.5 + t1 * 3 - 7) ** 2 +
+      (0.5 + t1 * 4 - 10) ** 2)
+  const descent = [0, 0.555, 1.3, 2.0939, 2.3].map((t1) => ({ x: t1, y: costVsSlope(t1) }))
+
   return (
     <LessonArticle>
       <Callout variant="beginner" title="Think ‘walking downhill,’ not ‘scary algorithm’">
@@ -246,6 +257,16 @@ g1 = (-3·1 + -5·2 + -7·3 + -10·4) / 4 = -18.5
               </tbody>
             </table>
           </div>
+          <CurvePlot
+            title="Each step rolls the slope θ₁ downhill toward the bottom of the bowl"
+            fn={costVsSlope}
+            domain={[0, 4.6]}
+            path={descent}
+            markMin={{ x: 2.3, y: costVsSlope(2.3) }}
+            xLabel="slope θ₁"
+            yLabel="cost J"
+            caption="Orange dots are the epochs from the table (θ₁ = 0 → 0.56 → 1.3 → 2.09 → 2.3). Steps are big up on the steep walls and shrink near the flat bottom — that is why the cost drops fast early, then crawls. The green ring marks the OLS optimum θ₁ = 2.3."
+          />
           <Callout variant="beginner">
             J keeps dropping and θ settles — that is convergence. Gradients shrink toward 0 as we
             approach the bottom of the bowl.

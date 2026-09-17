@@ -8,6 +8,7 @@ import {
   LessonArticle,
   LessonSection,
   NotebookCell,
+  ScatterPlot,
 } from '../../../../../components/content'
 
 export function SlrPerformanceMetrics() {
@@ -49,6 +50,26 @@ export function SlrPerformanceMetrics() {
           (sometimes written ŷ − y; be consistent). Metrics summarize these errors across{' '}
           <span className="font-mono text-sm">m</span> examples.
         </p>
+        <ScatterPlot
+          title="Residuals of ŷ ≈ 39.27 + 6.92·hours on the 10 students"
+          points={[
+            { x: 1, y: 45 },
+            { x: 2, y: 52 },
+            { x: 3, y: 61 },
+            { x: 4, y: 68 },
+            { x: 5, y: 74 },
+            { x: 6, y: 82 },
+            { x: 7, y: 88 },
+            { x: 8, y: 95 },
+            { x: 9, y: 100 },
+            { x: 10, y: 108 },
+          ]}
+          line={{ slope: 6.9152, intercept: 39.2667 }}
+          showResiduals
+          xLabel="Hours studied"
+          yLabel="Exam score"
+          caption="Every red dashed segment is one residual. MAE, MSE, and RMSE are just three different ways to summarise the lengths of these segments into a single score."
+        />
         <Flowchart
           title="From predictions to a scoreboard"
           chart={`flowchart TB

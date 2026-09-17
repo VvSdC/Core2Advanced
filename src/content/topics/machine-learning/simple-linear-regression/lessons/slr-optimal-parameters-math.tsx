@@ -7,6 +7,7 @@ import {
   KeyTakeaways,
   LessonArticle,
   LessonSection,
+  ScatterPlot,
 } from '../../../../../components/content'
 
 export function SlrOptimalParametersMath() {
@@ -266,6 +267,20 @@ squared x-devs: 2.25+0.25+0.25+2.25 = 5
           <p className="text-slate-300">
             Optimal line: <span className="font-mono text-sm text-white">ŷ = 0.5 + 2.3 · x</span>
           </p>
+          <ScatterPlot
+            title="The least-squares line ŷ = 0.5 + 2.3x on the four points"
+            points={[
+              { x: 1, y: 3 },
+              { x: 2, y: 5 },
+              { x: 3, y: 7 },
+              { x: 4, y: 10 },
+            ]}
+            line={{ slope: 2.3, intercept: 0.5 }}
+            showResiduals
+            xLabel="x"
+            yLabel="y"
+            caption="The red dashed residuals are tiny — that is what 'least squares' delivers. No other straight line makes the total squared gap smaller than J = 0.0375."
+          />
           <div className="mt-3 overflow-x-auto rounded-xl border border-surface-600">
             <table className="w-full text-sm text-slate-300">
               <thead>

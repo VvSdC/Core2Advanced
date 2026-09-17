@@ -7,6 +7,7 @@ import {
   KeyTakeaways,
   LessonArticle,
   LessonSection,
+  ScatterPlot,
 } from '../../../../../components/content'
 
 export function SlrEquations() {
@@ -89,6 +90,21 @@ print(y_hat)  # 61`}
         <Callout variant="beginner">
           That is prediction. No calculus. No matrix. Multiply and add.
         </Callout>
+        <ScatterPlot
+          title="Reading a prediction off the line: x = 3 → ŷ = 61"
+          points={[
+            { x: 1, y: 45 },
+            { x: 2, y: 52 },
+            { x: 3, y: 61 },
+            { x: 4, y: 68 },
+            { x: 5, y: 74 },
+          ]}
+          line={{ slope: 7, intercept: 40 }}
+          highlight={{ x: 3, y: 61 }}
+          xLabel="Hours studied (x)"
+          yLabel="Score (ŷ)"
+          caption="To predict, go up from x = 3 to the line, then read across. The orange marker is ŷ = 40 + 7×3 = 61."
+        />
       </LessonSection>
 
       <LessonSection title="What slope and intercept feel like">
