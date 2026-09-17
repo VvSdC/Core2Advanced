@@ -213,7 +213,7 @@ export const ragSubTopic: SubTopic = {
           id: 'evaluating-lessons',
           title: 'Lessons',
           lessons: [
-            { id: 'rag-evaluation-overview', title: 'Evaluation Overview', description: 'Retrieval vs generation — two dimensions, one test set.', readTime: '8 min', component: RagEvaluationOverview },
+            { id: 'rag-evaluation-overview', title: 'Evaluation Overview', description: 'Retrieval vs generation, building a golden test set, and offline evals vs online evals.', readTime: '12 min', component: RagEvaluationOverview },
             { id: 'retrieval-metrics', title: 'Retrieval Metrics', description: 'Recall@k, MRR, NDCG — measuring retrieval quality.', readTime: '10 min', component: RetrievalMetrics },
             { id: 'generation-faithfulness-metrics', title: 'Generation & Faithfulness', description: 'Answer relevance, groundedness, and LLM-as-judge.', readTime: '8 min', component: GenerationFaithfulnessMetrics },
             { id: 'rag-limitations-and-debugging', title: 'Limitations & Debugging', description: 'When RAG fails, debugging checklist, tuning order.', readTime: '10 min', component: RagLimitationsAndDebugging },

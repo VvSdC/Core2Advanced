@@ -178,6 +178,77 @@ export function RagEvaluationOverview() {
         </Callout>
       </LessonSection>
 
+      <LessonSection title="Offline evals (golden dataset) vs online evals">
+        <p className="text-slate-300">
+          The test set you just built is a <strong className="text-white">golden dataset</strong>: frozen inputs
+          plus labels you trust. You can score a system against it in two different modes. They answer different
+          questions and you need both.
+        </p>
+        <Definition term="Offline evaluation">
+          <p>
+            Run the <em>same</em> golden dataset through the pipeline on demand — before a ship, in CI, or when
+            you A/B a prompt. You have ground truth, so you can compute Recall@k, faithfulness, and correctness
+            and compare version A vs version B fairly. Production traffic is not involved.
+          </p>
+        </Definition>
+        <Definition term="Online evaluation">
+          <p>
+            Score a <em>sample of live user requests</em> as they happen. There is usually no gold answer for a
+            brand-new question, so you use proxies: faithfulness to retrieved context, relevance, user thumbs,
+            latency, cost. You catch drift the golden set never saw.
+          </p>
+        </Definition>
+        <div className="mt-4 overflow-x-auto rounded-xl border border-surface-600">
+          <table className="w-full text-sm text-slate-300">
+            <thead>
+              <tr className="border-b border-surface-600 bg-surface-800 text-left text-xs uppercase tracking-wider text-slate-400">
+                <th className="px-4 py-3"></th>
+                <th className="px-4 py-3">Offline (golden dataset)</th>
+                <th className="px-4 py-3">Online (live traffic)</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-surface-600">
+              {[
+                ['Question it answers', 'Did this change make known cases better or worse?', 'Is quality holding on real users right now?'],
+                ['Labels', 'Ground-truth answers and labelled chunks', 'Often none — judges, heuristics, thumbs'],
+                ['When you run it', 'Before deploy, in CI, during prompt/model A/B', 'Continuously on a sample of production'],
+                ['Strength', 'Repeatable, comparable, cheap to rerun', 'Sees new queries, index drift, model-provider changes'],
+                ['Weakness', 'Goes stale if production questions shift', 'Noisy, costs judge calls, cannot prove “correct”'],
+              ].map(([row, off, on]) => (
+                <tr key={row}>
+                  <td className="px-4 py-3 font-semibold text-white">{row}</td>
+                  <td className="px-4 py-3 text-slate-400">{off}</td>
+                  <td className="px-4 py-3 text-slate-400">{on}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <Callout variant="insight" title="They feed each other">
+          Offline is the gate: do not ship if the golden set regresses. Online is the watch: when live scores drop
+          or users thumb-down, add those traces as new golden rows so the next offline run covers the surprise.
+          LangSmith and Langfuse both implement this loop (datasets + experiments offline; sampled trace scoring
+          online).
+        </Callout>
+        <ContentStep number={1} title="Gate every change offline">
+          <p className="text-slate-300">
+            Same dataset, one variable changed (prompt, model, chunk size, k). Promote only if retrieval and
+            generation metrics hold or improve.
+          </p>
+        </ContentStep>
+        <ContentStep number={2} title="Watch a sample online">
+          <p className="text-slate-300">
+            Score 10–20% of production (or all high-risk paths). Alert on moving averages, not single bad turns.
+          </p>
+        </ContentStep>
+        <ContentStep number={3} title="Refresh the golden set">
+          <p className="text-slate-300">
+            Weekly, copy failing or novel online traces into the dataset and relabel. A golden set that never
+            grows will look green while users have moved on.
+          </p>
+        </ContentStep>
+      </LessonSection>
+
       <LessonSection title="The evaluation order — what to fix first">
         <div className="overflow-x-auto rounded-xl border border-surface-600">
           <table className="w-full text-sm text-slate-300">
@@ -212,7 +283,8 @@ export function RagEvaluationOverview() {
         items={[
           'RAG quality splits into retrieval (right chunks?) and generation (grounded answer?) — evaluate separately.',
           'Learn the vocabulary upfront: ground truth, labelled chunks, Recall@k, faithfulness, hallucination.',
-          'Build a test set of 30–100 questions with labelled chunks and ground-truth answers.',
+          'Build a golden dataset of 30–100 questions with labelled chunks and ground-truth answers.',
+          'Offline evals gate changes on that frozen set; online evals sample live traffic and feed new failures back into the golden set.',
           'Fix retrieval first (target Recall@5 ≥ 80%) before optimising generation or prompt engineering.',
         ]}
       />

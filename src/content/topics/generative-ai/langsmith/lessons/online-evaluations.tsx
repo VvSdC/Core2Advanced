@@ -12,10 +12,36 @@ export function OnlineEvaluations() {
     <LessonArticle>
       <LessonSection title="What are online evaluations?">
         <p className="text-slate-300">
-          Offline experiments test against a fixed dataset. <strong className="text-white">Online evaluations</strong>{' '}
-          run evaluators automatically on <em>live production traces</em> — scoring real user traffic as it
-          happens. You catch quality drift before users complain.
+          Offline experiments test against a frozen golden dataset. <strong className="text-white">Online
+          evaluations</strong> run evaluators on <em>live production traces</em> — scoring real user traffic as
+          it happens. You usually have no gold answer for a new question, so you score proxies (faithfulness,
+          relevance, thumbs) and watch for drift.
         </p>
+        <div className="mt-4 overflow-x-auto rounded-xl border border-surface-600">
+          <table className="w-full text-sm text-slate-300">
+            <thead>
+              <tr className="border-b border-surface-600 bg-surface-800 text-left text-xs uppercase tracking-wider text-slate-400">
+                <th className="px-4 py-3"></th>
+                <th className="px-4 py-3">Offline (previous lesson)</th>
+                <th className="px-4 py-3">Online (this lesson)</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-surface-600">
+              {[
+                ['Input', 'Golden dataset you labelled', 'Sample of live traces'],
+                ['Ground truth', 'Yes — expected answers / chunks', 'Usually no'],
+                ['Job', 'Gate a change before it ships', 'Watch quality after it ships'],
+                ['LangSmith', 'Datasets + evaluate()', 'Online Evaluations on a project'],
+              ].map(([row, off, on]) => (
+                <tr key={row}>
+                  <td className="px-4 py-3 font-semibold text-white">{row}</td>
+                  <td className="px-4 py-3 text-slate-400">{off}</td>
+                  <td className="px-4 py-3 text-slate-400">{on}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
         <Flowchart
           title="Online eval pipeline"
           chart={`flowchart LR

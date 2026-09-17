@@ -28,6 +28,7 @@ SUMMARY = (
     "agents that find and validate real software vulnerabilities. Focused on shipping AI developer "
     "tools that teams can trust."
 )
+HEADLINE = ""
 
 EXPERIENCE = [
     {
@@ -261,6 +262,14 @@ def build_docx():
     r.font.size = Pt(20)
     r.font.color.rgb = RGBColor.from_string(ACCENT)
 
+    if HEADLINE:
+        p = doc.add_paragraph()
+        p.paragraph_format.space_after = Pt(2)
+        rh = p.add_run(HEADLINE)
+        rh.italic = True
+        rh.font.size = Pt(12)
+        rh.font.color.rgb = RGBColor.from_string(ACCENT)
+
     p = doc.add_paragraph()
     p.paragraph_format.space_after = Pt(2)
     r = p.add_run(LOCATION + "  |  " + PHONE + "  |  ")
@@ -472,6 +481,12 @@ def build_pdf():
 
     # Header
     story.append(Paragraph(NAME, name_style))
+    if HEADLINE:
+        hl_style = ParagraphStyle(
+            "headline", parent=base, fontName="Helvetica-Oblique", fontSize=11,
+            textColor=accent, leading=14, spaceAfter=2,
+        )
+        story.append(Paragraph(HEADLINE, hl_style))
     contact = f'{LOCATION} &nbsp;|&nbsp; {PHONE} &nbsp;|&nbsp; {link(EMAIL, "mailto:" + EMAIL)}'
     story.append(Paragraph(contact, contact_style))
     links_html = " &nbsp;|&nbsp; ".join(f"{lab}: {link(shown, url)}" for lab, shown, url in LINKS)

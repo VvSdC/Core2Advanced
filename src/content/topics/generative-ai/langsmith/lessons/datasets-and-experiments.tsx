@@ -16,8 +16,15 @@ export function DatasetsAndExperiments() {
           A <strong className="text-white">dataset</strong> is a fixed set of test inputs (and optional expected
           outputs) you run repeatedly. An <strong className="text-white">experiment</strong> runs your chain or
           agent against that dataset with a specific prompt, model, or config — then compares results side by side.
-          Think of it as offline benchmarking before you touch production.
+          This is <strong className="text-white">offline evaluation</strong>: the golden set does not move while
+          you change the system. (Live traffic scoring is the next lesson — Online Evaluations.)
         </p>
+        <Callout variant="beginner" title="What belongs in a golden row">
+          At minimum: the <code className="font-mono text-sm">input</code> you will send the chain. For graded
+          scoring, add <code className="font-mono text-sm">expected_answer</code> (and for RAG, the labelled
+          chunks). Optional metadata — topic, risk, language — lets you slice scores later. If a row has no
+          expected output, you can still run LLM-as-judge, but you cannot measure exact match or Recall@k.
+        </Callout>
       </LessonSection>
 
       <LessonSection title="Create a dataset">
@@ -108,7 +115,7 @@ results = evaluate(
 
       <KeyTakeaways
         items={[
-          'Datasets = fixed test inputs; experiments = run chain variants against them offline.',
+          'Datasets = a frozen golden set; experiments = offline runs of chain variants against it.',
           'Build datasets from production traces (failures) or CSV golden sets.',
           'Use evaluate() / run_on_dataset to run chains and evaluators in one step.',
           'Compare prompt versions, models, or configs side by side before deploy.',

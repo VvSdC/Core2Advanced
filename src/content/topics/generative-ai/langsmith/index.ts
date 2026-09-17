@@ -33,14 +33,14 @@ const observabilityLessons = [
 
 const evaluationLessons = [
   { id: 'prompt-hub', title: 'Prompt Hub', description: 'Version prompts in LangSmith, pull from hub in LangChain code, commit history.', readTime: '10 min', component: PromptHub },
-  { id: 'datasets-and-experiments', title: 'Datasets & Experiments', description: 'Create test sets from traces, run experiments, compare chain versions.', readTime: '12 min', component: DatasetsAndExperiments },
+  { id: 'datasets-and-experiments', title: 'Datasets & Experiments', description: 'Golden datasets, offline evaluate() runs, and comparing chain versions before deploy.', readTime: '12 min', component: DatasetsAndExperiments },
   { id: 'evaluators-and-llm-as-judge', title: 'Evaluators & LLM-as-a-Judge', description: 'Built-in templates, custom evaluators, faithfulness and relevancy scoring.', readTime: '12 min', component: EvaluatorsAndLlmAsJudge },
   { id: 'annotation-queues-and-feedback', title: 'Annotation Queues & Feedback', description: 'Human review queues, run.feedback() API, QA team workflows.', readTime: '10 min', component: AnnotationQueuesAndFeedback },
 ]
 
 const productionLessons = [
   { id: 'playground-and-prompt-testing', title: 'Playground & Prompt Testing', description: 'Test prompts on dataset rows in UI — compare models without redeploying.', readTime: '10 min', component: PlaygroundAndPromptTesting },
-  { id: 'online-evaluations', title: 'Online Evaluations', description: 'Auto-score production traces — sampling rules and drift detection.', readTime: '10 min', component: OnlineEvaluations },
+  { id: 'online-evaluations', title: 'Online Evaluations', description: 'Score live traces vs golden-set experiments — sampling, drift alerts, and feeding failures back offline.', readTime: '12 min', component: OnlineEvaluations },
   { id: 'monitoring-and-deployment', title: 'Monitoring & Deployment', description: 'Dashboards, cost tracking, LangGraph Platform deployment integration.', readTime: '10 min', component: MonitoringAndDeployment },
   { id: 'putting-it-together-langsmith', title: 'Putting It Together', description: 'Full LangChain stack lifecycle — build, trace, eval, deploy, monitor.', readTime: '10 min', component: PuttingItTogetherLangsmith },
 ]
