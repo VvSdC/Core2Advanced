@@ -206,6 +206,95 @@ for tokens in (2_000, 32_000, 128_000):
         </ContentStep>
       </LessonSection>
 
+      <LessonSection title="Why cache Keys and Values — but not Queries?">
+        <p>
+          It's called the <strong className="text-white">KV</strong> cache, not the QKV cache. Every token produces a
+          Query, a Key, and a Value — so why keep only two of the three? The answer falls straight out of how attention
+          actually works during generation.
+        </p>
+
+        <ContentStep number={1} title="Recall the three roles">
+          <ul className="mt-1 list-disc space-y-1 pl-5 text-slate-300">
+            <li>
+              <strong className="text-white">Query (Q)</strong> — what the <em>current</em> token is looking for right now.
+            </li>
+            <li>
+              <strong className="text-white">Key (K)</strong> — a label advertising what each token offers, so queries can
+              find it.
+            </li>
+            <li>
+              <strong className="text-white">Value (V)</strong> — the actual information a token hands over when attended
+              to.
+            </li>
+          </ul>
+          <p className="mt-2">
+            Attention for one position is: take <em>that token's</em> Query, compare it against the Keys of{' '}
+            <em>all</em> tokens, then pull in a weighted blend of their Values.
+          </p>
+        </ContentStep>
+
+        <ContentStep number={2} title="The key insight: whose Query is ever used again?">
+          <p>
+            During decode we generate exactly one token per step, and attention is only ever computed{' '}
+            <strong className="text-white">from the current token's point of view</strong>. So:
+          </p>
+          <ul className="mt-2 list-disc space-y-2 pl-5 text-slate-300">
+            <li>
+              A token's <strong className="text-white">Query</strong> is used <em>once</em> — at the single step when that
+              token is the current one — and then <strong className="text-white">never again</strong>. No future step
+              looks back at an old token's Query.
+            </li>
+            <li>
+              A token's <strong className="text-white">Key and Value</strong> are used <em>every</em> future step, because
+              each new token's Query must compare against all earlier Keys and blend all earlier Values.
+            </li>
+          </ul>
+          <Callout variant="insight">
+            That's the whole reason: <strong className="text-white">Keys and Values are needed again and again, so we
+            cache them. A Query is consumed immediately and thrown away, so caching it would be pointless.</strong>
+          </Callout>
+        </ContentStep>
+
+        <ContentStep number={3} title="See it in the attention grid">
+          <p>
+            Because of causal masking, generation fills a lower-triangular grid. Read it by row (each row is one token
+            asking its question):
+          </p>
+          <Example
+            title="Which Q, K, V get used"
+            output={`Rows = the Query doing the asking. Columns = the K,V being looked at.
+
+           K,V:  t1   t2   t3   t4(new)
+Q(t1) asks ->    x
+Q(t2) asks ->    x    x
+Q(t3) asks ->    x    x    x
+Q(t4) asks ->    x    x    x    x   <- current step
+
+Column t1's K,V is read 4 times (every row) -> worth caching.
+Q(t1) appears in exactly ONE row, then is done -> not worth caching.`}
+            caption="Every column (a token's K,V) is reused by all later rows. Every Query lives in a single row only."
+          >{`tokens = ["t1", "t2", "t3", "t4"]
+
+# How many times each token's Query is used across all decode steps?
+query_uses = {t: 0 for t in tokens}
+# How many times each token's Key/Value is read?
+kv_uses = {t: 0 for t in tokens}
+
+for step, current in enumerate(tokens):          # each new token = one row
+    query_uses[current] += 1                     # its Query is used this row only
+    for earlier in tokens[: step + 1]:           # attends to itself + earlier
+        kv_uses[earlier] += 1                    # their K,V get read again
+
+print("Query uses:", query_uses)   # every token: 1
+print("K,V uses:  ", kv_uses)      # earlier tokens: many`}</Example>
+          <Callout variant="beginner">
+            Meeting analogy: your <em>question</em> (Query) is asked once and answered — no need to file it away. But
+            everyone's <em>name tag</em> (Key) and <em>expertise</em> (Value) must stay on the table, because later
+            questioners will need to consult them too.
+          </Callout>
+        </ContentStep>
+      </LessonSection>
+
       <KeyTakeaways
         items={[
           'The context window is the model\'s working memory in tokens — prompt + answer must fit inside it.',
@@ -213,6 +302,7 @@ for tokens in (2_000, 32_000, 128_000):
           'Attention cost grows with the square of length, so huge contexts are slow and expensive — a key motivation for RAG.',
           'Models can miss facts buried in the middle of long contexts ("lost in the middle"), so keep context focused.',
           'The KV cache stores past tokens\' Keys/Values so each new token is cheap — explaining slow prefill, fast streaming, and growing memory use.',
+          'We cache Keys and Values (reused by every future token) but not Queries — each token\'s Query is used once, at its own step, then discarded.',
         ]}
       />
     </LessonArticle>

@@ -36,12 +36,14 @@ export function TheTransformerArchitecture() {
         </p>
         <ul className="mt-2 list-disc space-y-2 pl-5 text-slate-300">
           <li>
-            <strong className="text-white">Slow.</strong> Word-by-word processing can't use modern GPUs, which love doing
-            thousands of things at once.
+            <strong className="text-white">Hard to parallelise.</strong> Because each step depends on the previous one,
+            an RNN must process words strictly in sequence — one after another. That can't use modern GPUs (which love
+            doing thousands of things at once), so training is slow.
           </li>
           <li>
-            <strong className="text-white">Forgetful.</strong> By the end of a long paragraph, the memory of the
-            beginning has faded, so long-range connections get lost.
+            <strong className="text-white">Poor at long-range dependencies.</strong> Information is squeezed through a
+            single running "memory", so by the end of a long paragraph the beginning has faded — connections between
+            far-apart words get lost.
           </li>
         </ul>
         <p>

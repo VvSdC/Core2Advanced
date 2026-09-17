@@ -15,6 +15,7 @@ import { WhatAreModelParameters } from './lessons/what-are-model-parameters'
 // The Bigger Picture
 import { HowLlmsAreTrained } from './lessons/how-llms-are-trained'
 import { ContextWindowsAndKvCache } from './lessons/context-windows-and-kv-cache'
+import { PrefillDecodeAndLatency } from './lessons/prefill-decode-and-latency'
 import { SmallLanguageModels } from './lessons/small-language-models'
 import { LargeLanguageModels } from './lessons/large-language-models'
 import { MultimodalModels } from './lessons/multimodal-models'
@@ -112,6 +113,14 @@ const biggerPictureLessons = [
       'The model\'s working memory in tokens, the quadratic cost of long context, "lost in the middle", and how the KV cache makes generation fast.',
     readTime: '12 min',
     component: ContextWindowsAndKvCache,
+  },
+  {
+    id: 'prefill-decode-and-latency',
+    title: 'Why LLMs Pause: Prefill, Decode & Latency',
+    description:
+      'The two phases behind every answer — prefill (parallel prompt processing) and decode (autoregressive, cache-reusing generation) — plus the TTFT and TPOT metrics that describe response speed.',
+    readTime: '12 min',
+    component: PrefillDecodeAndLatency,
   },
   {
     id: 'small-language-models',

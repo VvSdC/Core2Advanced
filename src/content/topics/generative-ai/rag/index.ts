@@ -13,6 +13,7 @@ import { OpenSourceEmbeddings } from './lessons/embeddings/open-source-embedding
 import { PopularEmbeddingQuestions } from './lessons/embeddings/popular-embedding-questions'
 import { SpecializedEmbeddings } from './lessons/embeddings/specialized-embeddings'
 import { WhatAreEmbeddings } from './lessons/embeddings/what-are-embeddings'
+import { EvaluatingEmbeddingModels } from './lessons/embeddings/evaluating-embedding-models'
 
 // Chunking
 import { ChunkSizeAndOverlap } from './lessons/chunking/chunk-size-and-overlap'
@@ -36,6 +37,11 @@ import { DenseRetrieval } from './lessons/retrieval/dense-retrieval'
 import { HybridSearchAndRrf } from './lessons/retrieval/hybrid-search-and-rrf'
 import { MmrAndReranking } from './lessons/retrieval/mmr-and-reranking'
 import { RetrievalOverview } from './lessons/retrieval/retrieval-overview'
+import { HandlingBadRetrieval } from './lessons/retrieval/handling-bad-retrieval'
+
+// Production
+import { ScalingRagInProduction } from './lessons/production/scaling-rag-in-production'
+import { ProductionRetrospective } from './lessons/production/production-retrospective'
 
 // Evaluation
 import { EvaluationFrameworks } from './lessons/evaluation/evaluation-frameworks'
@@ -106,6 +112,7 @@ export const ragSubTopic: SubTopic = {
             { id: 'open-source-embeddings', title: 'Open-Source Models', description: 'BGE, E5, MiniLM — running embeddings locally.', readTime: '10 min', component: OpenSourceEmbeddings },
             { id: 'specialized-embeddings', title: 'Specialized Embeddings', description: 'Multimodal, code, and domain-specific models.', readTime: '8 min', component: SpecializedEmbeddings },
             { id: 'popular-embedding-questions', title: 'Popular Questions', description: 'abc vs ABC, mixing models, negation, dimensions — detailed FAQ.', readTime: '14 min', component: PopularEmbeddingQuestions },
+            { id: 'evaluating-embedding-models', title: 'Evaluating & Choosing Models', description: 'A repeatable A/B workflow on your own golden set — Recall@k, MRR, spot-checks, and the real tradeoffs behind picking a model.', readTime: '12 min', component: EvaluatingEmbeddingModels },
           ],
         },
         {
@@ -184,6 +191,7 @@ export const ragSubTopic: SubTopic = {
             { id: 'hybrid-search-and-rrf', title: 'Hybrid Search & RRF', description: 'Dense + BM25 merged with Reciprocal Rank Fusion.', readTime: '10 min', component: HybridSearchAndRrf },
             { id: 'mmr-and-reranking', title: 'MMR & Reranking', description: 'Diversity-aware selection and cross-encoder precision.', readTime: '10 min', component: MmrAndReranking },
             { id: 'advanced-retrieval-strategies', title: 'Advanced Strategies', description: 'HyDE, multi-query, parent-document, query decomposition.', readTime: '10 min', component: AdvancedRetrievalStrategies },
+            { id: 'handling-bad-retrieval', title: 'Handling Bad Retrieval', description: 'Similarity thresholds, metadata filtering, reranking, query rewriting, and a fallback decision tree for when chunks are irrelevant.', readTime: '12 min', component: HandlingBadRetrieval },
           ],
         },
         {
@@ -218,6 +226,20 @@ export const ragSubTopic: SubTopic = {
           lessons: [
             { id: 'ragas-evaluation', title: 'RAGAS', description: 'Full paper walkthrough — faithfulness, relevancy, context metrics, claim extraction.', readTime: '18 min', component: RagasEvaluation },
             { id: 'ares-automated-evaluation', title: 'ARES', description: 'Full paper walkthrough — lightweight judge models for scalable production eval.', readTime: '18 min', component: AresAutomatedEvaluation },
+          ],
+        },
+      ],
+    },
+    {
+      id: 'production',
+      title: 'Production RAG',
+      sections: [
+        {
+          id: 'production-lessons',
+          title: 'Lessons',
+          lessons: [
+            { id: 'scaling-rag-in-production', title: 'Scaling RAG', description: 'Latency budgets, caching (embedding/query/answer), parallel retrieval, ANN indexing, and cutting generation cost.', readTime: '14 min', component: ScalingRagInProduction },
+            { id: 'production-retrospective', title: 'What I\'d Do Differently', description: 'A build-it-again retrospective — common regrets, real bottlenecks, tradeoffs to reconsider, and a production checklist.', readTime: '12 min', component: ProductionRetrospective },
           ],
         },
       ],

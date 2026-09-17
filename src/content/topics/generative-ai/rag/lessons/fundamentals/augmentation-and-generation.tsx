@@ -314,6 +314,55 @@ export function AugmentationAndGeneration() {
         </Callout>
       </LessonSection>
 
+      <LessonSection title="Output validation — checking the answer before it ships">
+        <p className="mb-4 text-slate-300">
+          Everything so far <em>reduces</em> hallucination but cannot <em>guarantee</em> it. A production RAG system adds
+          one more step: after the LLM writes an answer, verify it against the retrieved context{' '}
+          <strong className="text-white">before showing it to the user</strong>. This is a runtime check, not an offline
+          evaluation.
+        </p>
+
+        <Flowchart
+          title="Post-generation validation gate"
+          chart={`flowchart TB
+  A["LLM writes a draft answer"] --> B["Validate against retrieved context"]
+  B --> C{"Every claim supported + citations valid?"}
+  C -- yes --> D["Return the answer"]
+  C -- no --> E["Regenerate once, or refuse honestly"]`}
+        />
+
+        <ContentStep number={1} title="Claim verification (groundedness check)">
+          <p>
+            Break the answer into individual factual claims and check that each one is actually supported by a retrieved
+            chunk. A cheap, common approach is an <strong className="text-white">LLM-as-judge</strong> call: "Is every
+            statement in this answer supported by the context? List any that are not." Unsupported claims mean the answer
+            is not grounded.
+          </p>
+        </ContentStep>
+
+        <ContentStep number={2} title="Citation validation">
+          <p>
+            If your prompt requires citations, confirm they are real: every cited source must exist among the retrieved
+            chunks, and the cited fact must actually appear there. Fabricated or mismatched citations are a red flag to
+            block or regenerate.
+          </p>
+        </ContentStep>
+
+        <ContentStep number={3} title="Rule + safety checks">
+          <p>
+            Cheap deterministic guards catch obvious problems before you pay for an LLM judge: required format (JSON/schema),
+            forbidden content, PII leakage, or answers that ignore the mandated refusal phrase when context was empty.
+          </p>
+        </ContentStep>
+
+        <Callout variant="tip">
+          Validation has a cost (extra latency and, for LLM-judge, extra tokens). Reserve the expensive checks for
+          high-stakes domains (medical, legal, finance) or low-confidence retrievals; use cheap rule checks everywhere. On
+          failure, regenerate once, then fall back to an honest "I couldn't verify this" rather than shipping an unchecked
+          answer.
+        </Callout>
+      </LessonSection>
+
       <LessonSection title="What makes a good RAG answer">
         <ul className="list-disc space-y-3 pl-5 text-slate-300">
           <li>
@@ -341,6 +390,7 @@ export function AugmentationAndGeneration() {
           'Prompt structure: system rules → context chunks with sources → user question (always in this order).',
           'Temperature 0–0.2 for factual RAG — low creativity keeps answers faithful to the evidence.',
           'Missing context = retrieval problem. Context ignored = generation problem. Always inspect the prompt first.',
+          'Validate answers at runtime — verify each claim against the context and check citations before returning; regenerate or refuse on failure.',
           'A good RAG answer is grounded, cited, honest when information is missing, and readable.',
         ]}
       />
