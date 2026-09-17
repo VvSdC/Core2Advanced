@@ -38,6 +38,8 @@ import { mcpSubTopic } from './protocols/mcp'
 
 import { a2aSubTopic } from './protocols/a2a'
 
+import { aiSecuritySubTopic } from './ai-security'
+
 
 
 export const generativeAiTopic: Topic = {
@@ -111,6 +113,8 @@ export const generativeAiTopic: Topic = {
       },
 
     },
+
+    { type: 'subTopic', subTopicId: 'ai-security' },
 
     { type: 'subTopic', subTopicId: 'langchain' },
 
@@ -195,6 +199,8 @@ export const generativeAiTopic: Topic = {
     mcpSubTopic,
 
     a2aSubTopic,
+
+    aiSecuritySubTopic,
 
     langfuseSubTopic,
 
