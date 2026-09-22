@@ -3,6 +3,7 @@ import {
   ContentStep,
   Definition,
   Example,
+  Flowchart,
   KeyTakeaways,
   LessonArticle,
   LessonSection,
@@ -11,117 +12,188 @@ import {
 export function CreatingFeatures() {
   return (
     <LessonArticle>
+      <Callout variant="beginner" title="Invent columns that a human would invent">
+        Good features are often ratios, flags, time pieces, and &ldquo;what happened before for this
+        entity?&rdquo; Bad features are post-outcome facts and future information. The clock test
+        from EDA still rules.
+      </Callout>
+
       <Definition term="Feature creation">
         <p>
-          New columns that make the hypothesis class’s job easier: a ratio the line can use,
-          a weekday a tree can split, a lag that is actually known at prediction time. Good
-          features are cheaper than a fancier algorithm.
+          Deriving new columns from existing ones — arithmetic, interactions, datetime parts,
+          aggregations — such that every value would be knowable at prediction time{' '}
+          <strong className="text-white">T</strong>.
         </p>
       </Definition>
 
-      <LessonSection title="Patterns that keep showing up">
+      <LessonSection title="Patterns that keep paying rent">
         <div className="overflow-x-auto rounded-xl border border-surface-600">
           <table className="w-full text-sm text-slate-300">
             <thead>
               <tr className="border-b border-surface-600 bg-surface-800 text-left text-xs uppercase tracking-wider text-slate-400">
-                <th className="px-4 py-3">Idea</th>
+                <th className="px-4 py-3">Pattern</th>
                 <th className="px-4 py-3">Example</th>
+                <th className="px-4 py-3">Watch</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-surface-600">
               {[
-                ['Ratios and rates', 'spend / visits, errors / requests — size-free'],
-                ['Interactions', 'x₁x₂ when the effect of A depends on B (poly lesson)'],
-                ['Bins / piecewise', 'age bands a linear model can give different slopes via dummies'],
-                ['Datetime parts', 'hour, dow, is_holiday, months since signup'],
-                ['Lags & rolling', 'mean spend last 7d, known at t, not including t+1'],
-                ['Aggregates by entity', 'user’s historical rate — computed from past rows only'],
-                ['Text (light)', 'length, has_link, bag-of-words / TF-IDF before a linear SVM'],
-              ].map(([idea, ex]) => (
-                <tr key={idea}>
-                  <td className="px-4 py-3 font-semibold text-white">{idea}</td>
+                ['Ratios / rates', 'loan_amt / income', 'Divide-by-zero → define ε or flag'],
+                ['Differences', 'price − competitor_price', 'Units must match'],
+                ['Interactions', 'promo × weekend', 'Can explode; start few'],
+                ['Bins', 'age decades', 'Edges fit on train; trees may not need bins'],
+                ['Datetime parts', 'hour, dow, month', 'Cyclical: sin/cos for hour/month'],
+                ['Flags', 'is_mobile, has_avatar', 'From EDA spikes / structural zeros'],
+                ['Lags', 'sales yesterday', 'Strictly past; align grain'],
+                ['Entity history', 'user 30d spend', 'groupby + shift; no same-row leak'],
+                ['Text light', 'len, has_url, digit_ratio', 'Before full NLP'],
+              ].map(([p, ex, w]) => (
+                <tr key={p}>
+                  <td className="px-4 py-3 font-semibold text-white">{p}</td>
                   <td className="px-4 py-3 text-slate-400">{ex}</td>
+                  <td className="px-4 py-3 text-slate-400">{w}</td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
-        <Callout variant="tip" title="The clock test again">
-          A rolling 7-day mean that includes today’s label-day is leakage. Shift(1) so every
-          aggregate uses strictly earlier rows. Group aggregates (mean target by city) are
-          target encoding — use the OOF rule.
+        <Flowchart
+          title="Create only if leak-free"
+          chart={`flowchart TD
+  A[Candidate feature] --> B{Known at time T?}
+  B -->|No| C[Reject — leakage]
+  B -->|Yes| D{Adds signal beyond raw cols?}
+  D -->|No| E[Skip — noise]
+  D -->|Yes| F[Add + document in FE note]`}
+        />
+      </LessonSection>
+
+      <LessonSection title="Datetime — parts and cycles">
+        <ContentStep number={1} title="Calendar parts">
+          <p>hour, day_of_week, month, is_weekend, is_month_start. Great for demand and traffic.</p>
+        </ContentStep>
+        <ContentStep number={2} title="Cyclical encoding">
+          <p>
+            Hour 23 and hour 0 are neighbors. Use{' '}
+            <code className="text-slate-200">sin(2π h/24)</code>,{' '}
+            <code className="text-slate-200">cos(2π h/24)</code> for linear models. Trees can split on
+            raw hour if you also allow both ends.
+          </p>
+        </ContentStep>
+        <ContentStep number={3} title="Time since">
+          <p>
+            days_since_signup at scoring time T — compute from signup_at and T, never from a future
+            event.
+          </p>
+        </ContentStep>
+      </LessonSection>
+
+      <LessonSection title="Lags and rolling history — the advanced core">
+        <p className="text-slate-300">
+          For each entity (store, user, SKU), features at time t may use only rows with time &lt; t
+          (or ≤ t − horizon).
+        </p>
+        <Example title="Safe lag pattern">
+{`# per store-sku, sorted by date
+df["units_lag_1"] = df.groupby(["store","sku"])["units_sold"].shift(1)
+df["units_roll7"] = (
+    df.groupby(["store","sku"])["units_sold"]
+      .transform(lambda s: s.shift(1).rolling(7).mean())
+)
+# shift(1) before rolling → no same-day leak`}
+        </Example>
+        <Callout variant="insight" title="The clock test again">
+          If a feature uses information from after the label window — or from the label itself —
+          delete it. &ldquo;Visits in the next 30 days&rdquo; is not a feature for a 30-day outcome.
         </Callout>
       </LessonSection>
 
-      <LessonSection title="When not to invent columns">
-        <p className="text-slate-300">
-          Random crosses of 40 categoricals will overfit and explode dimension. Create features
-          that EDA or domain knowledge already hinted (“the U in residual vs age”, “weekends
-          spike”). Then let model selection decide if they stay.
-        </p>
+      <LessonSection title="When not to invent">
+        <ul className="list-disc space-y-1 pl-5 text-slate-300">
+          <li>Hundreds of random polynomial terms — you will overfit and confuse selection.</li>
+          <li>Encoding user_id as a raw number — memorisation, not generalisation.</li>
+          <li>Anything EDA marked as leakage, even if it boosts offline AUC.</li>
+          <li>Features you cannot compute in the live system (batch-only joins missing in API).</li>
+        </ul>
+        <Callout variant="tip" title="Train/serve parity">
+          Every feature must be producible online or in the same batch job with the same definition.
+          Notebook-only joins that never ship are a silent offline win.
+        </Callout>
       </LessonSection>
 
       <LessonSection title="Worked problems">
         <ContentStep number={1} title="Problem 1 — Ratio">
-          <p>You have spend and n_orders. Why spend_per_order for a linear churn model?</p>
+          <p>loan_amt=0 rare rows. How do you build loan_to_income?</p>
           <div className="mt-2 rounded-xl border border-surface-600 bg-surface-900 p-4 font-mono text-sm text-slate-200">
-            <div>A line cannot invent a quotient. High spend from one huge order vs many small ones is a different story.</div>
+            <div>loan_amt / (income + ε) or set null + flag when income missing/0. Document ε.</div>
           </div>
         </ContentStep>
-        <ContentStep number={2} title="Problem 2 — Datetime">
-          <p>A timestamp ts. Which parts are usually safe at inference?</p>
+        <ContentStep number={2} title="Problem 2 — Lag leak">
+          <p>units_roll7 = rolling(7).mean() without shift. Predicting today&rsquo;s units. Bug?</p>
           <div className="mt-2 rounded-xl border border-surface-600 bg-surface-900 p-4 font-mono text-sm text-slate-200">
-            <div>hour, dow, month, is_weekend — functions of ts. Not “days until event_end” if event_end is after the label.</div>
+            <div>Yes — today’s units enter the feature. Use shift(1) then rolling.</div>
           </div>
         </ContentStep>
-        <ContentStep number={3} title="Problem 3 — Leakage lag">
-          <p>target = sales[t]. Feature = mean(sales[t-6 : t]). Inclusive of t?</p>
+        <ContentStep number={3} title="Problem 3 — Cyclical">
+          <p>Why might raw month=12 and month=1 confuse a linear model?</p>
           <div className="mt-2 rounded-xl border border-surface-600 bg-surface-900 p-4 font-mono text-sm text-slate-200">
-            <div>If the window includes t, you leaked today’s sales. Use [t-7 : t-1].</div>
+            <div>They look far apart (12 vs 1) but are adjacent in the year. sin/cos fixes that.</div>
           </div>
         </ContentStep>
         <ContentStep number={4} title="Problem 4 — Interaction">
-          <p>Discount only works for carts &gt; ₹2 000. What feature helps a linear model?</p>
+          <p>discount helps only for category=electronics. FE move?</p>
           <div className="mt-2 rounded-xl border border-surface-600 bg-surface-900 p-4 font-mono text-sm text-slate-200">
-            <div>discount × 1[cart &gt; 2000], or discount × cart. A tree can learn the split unaided.</div>
+            <div>Create discount × is_electronics (or let a tree find the interaction).</div>
           </div>
         </ContentStep>
-        <ContentStep number={5} title="Problem 5 — User history (ML flavour)">
-          <p>user_churn_rate_so_far including the current month’s label. Legal?</p>
+        <ContentStep number={5} title="Problem 5 — History window">
+          <p>Predict churn next month. Feature: average spend including this month&rsquo;s spend when the label uses this month. OK?</p>
           <div className="mt-2 rounded-xl border border-surface-600 bg-surface-900 p-4 font-mono text-sm text-slate-200">
-            <div>No. History must stop before the label month. First month of a user gets a global prior, not NaN magic.</div>
+            <div>Only if that spend is known before the churn decision boundary. Prefer strictly past months.</div>
+          </div>
+        </ContentStep>
+        <ContentStep number={6} title="Problem 6 — Text light">
+          <p>Ticket body available at open time. First FE before NLP?</p>
+          <div className="mt-2 rounded-xl border border-surface-600 bg-surface-900 p-4 font-mono text-sm text-slate-200">
+            <div>length, word_count, has_url, has_digits, language flag — cheap and often strong.</div>
           </div>
         </ContentStep>
       </LessonSection>
 
-      <LessonSection title="Python — a safe lag and a ratio">
+      <LessonSection title="Python — ratio + safe lag">
         <Example
-          title="shift(1) then rolling — no today’s y"
-          output={`   day  sales  lag1  roll3_past  spend_per_order
-0    1     10   NaN         NaN              5.0
-1    2     12  10.0        10.0              4.0
-2    3      9  12.0        11.0              9.0`}
-        >{`import pandas as pd
+          title="loan_to_income and units_lag_1"
+          output={`ratios: [0.4, 0.5, nan]
+lags: [nan, 10.0, 12.0]`}
+        >{`import numpy as np
+import pandas as pd
 
-df = pd.DataFrame({
-    "day": [1, 2, 3],
-    "sales": [10, 12, 9],
-    "spend": [20, 16, 18],
-    "orders": [4, 4, 2],
+loans = pd.DataFrame({
+    "loan_amt": [200_000, 150_000, 100_000],
+    "income": [500_000, 300_000, 0.0],
 })
-df["lag1"] = df.sales.shift(1)
-df["roll3_past"] = df.sales.shift(1).rolling(2, min_periods=1).mean()
-df["spend_per_order"] = df.spend / df.orders
-print(df[["day", "sales", "lag1", "roll3_past", "spend_per_order"]].to_string())`}</Example>
+eps = 1.0
+loans["lti"] = loans["loan_amt"] / (loans["income"] + eps)
+loans.loc[loans["income"] <= 0, "lti"] = np.nan
+print("ratios:", loans["lti"].round(2).tolist())
+
+sales = pd.DataFrame({
+    "store": ["S1", "S1", "S1"],
+    "date": pd.to_datetime(["2024-03-01", "2024-03-02", "2024-03-03"]),
+    "units": [10, 12, 9],
+})
+sales["units_lag_1"] = sales.groupby("store")["units"].shift(1)
+print("lags:", sales["units_lag_1"].tolist())`}</Example>
       </LessonSection>
 
       <KeyTakeaways
         items={[
-          'Create features that your hypothesis class cannot invent: ratios, interactions, calendar parts, strictly-past lags.',
-          'Every aggregate and lag must pass the clock test — only information known before the label.',
-          'User-level history is gold and also a leakage magnet. Compute it from earlier rows; smooth the cold start toward a global prior.',
-          'Trees invent some interactions via splits. Linear models need you to write the product or the bin.',
-          'Do not brute-force every cross of 40 categoricals. Start from EDA hints and domain rules, then let selection drop the rest.',
+          'Create ratios, flags, datetime parts, interactions, and entity history that pass the clock test.',
+          'Lags and rolling stats must shift so the label row’s own target never enters the feature.',
+          'Cyclical sin/cos helps linear models on hour/month; trees can use raw parts.',
+          'Light text features are valid FE before heavy NLP.',
+          'Reject leakage, ID memorisation, and features you cannot compute in production.',
+          'Document each new column in the FE note — definition, time availability, and train/serve source.',
         ]}
       />
     </LessonArticle>

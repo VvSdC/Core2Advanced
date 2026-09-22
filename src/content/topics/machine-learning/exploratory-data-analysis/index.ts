@@ -1,46 +1,73 @@
 import type { SubTopic } from '../../../types'
+import { EdaCaseStudies } from './lessons/eda-case-studies'
+import { FindingRelationships } from './lessons/finding-relationships'
+import { FirstLookAtData } from './lessons/first-look-at-data'
 import { LeakageDuplicatesAndSplits } from './lessons/leakage-duplicates-and-splits'
-import { RelationshipsAndTarget } from './lessons/relationships-and-target'
-import { UnivariateEda } from './lessons/univariate-eda'
-import { WhyEda } from './lessons/why-eda'
+import { MissingValuesDeepDive } from './lessons/missing-values-deep-dive'
+import { UnderstandingEachColumn } from './lessons/understanding-each-column'
+import { WhatIsEda } from './lessons/what-is-eda'
 
 export const exploratoryDataAnalysisSubTopic: SubTopic = {
   id: 'exploratory-data-analysis',
   title: 'Exploratory Data Analysis',
   description:
-    'Look at the table before you model — what a row is, what is missing, how features relate to the target, and the leakage smells that fake a genius score.',
+    'From “what is this table?” to leakage-proof splits — grain, types, univariate health, missingness, relationships, traps, and full case studies on tiny messy tables.',
   lessons: [
     {
-      id: 'why-eda',
-      title: 'Why EDA (and when)',
+      id: 'what-is-eda',
+      title: 'What Is EDA?',
       description:
-        'The questions every dataset must answer, why this chapter sits before algorithms, and why you explore train — not test.',
-      readTime: '14 min',
-      component: WhyEda,
+        'The habit before any algorithm: five questions every dataset must answer, the freeze test, and a data-note template you will reuse.',
+      readTime: '18 min',
+      component: WhatIsEda,
     },
     {
-      id: 'univariate-eda',
-      title: 'Univariate EDA',
+      id: 'first-look-at-data',
+      title: 'First Look at the Data',
       description:
-        'Types, sentinels, missingness, shape, cardinality — one column at a time, before you plot vs y.',
-      readTime: '16 min',
-      component: UnivariateEda,
+        'Shape, grain, modelling types, and meeting the target — the first hour with a new file.',
+      readTime: '18 min',
+      component: FirstLookAtData,
     },
     {
-      id: 'relationships-and-the-target',
-      title: 'Relationships & the Target',
+      id: 'understanding-each-column',
+      title: 'Understanding Each Column',
       description:
-        'Feature vs y and feature vs feature. Pearson vs a U-shape, twins, confounders, and writing down imbalance.',
-      readTime: '16 min',
-      component: RelationshipsAndTarget,
+        'Univariate EDA: mean vs median, skew, outliers vs sentinels, cardinality, datetime and text first-passes.',
+      readTime: '20 min',
+      component: UnderstandingEachColumn,
+    },
+    {
+      id: 'missing-values-deep-dive',
+      title: 'Missing Values Deep Dive',
+      description:
+        'MCAR / MAR / MNAR stories, sentinels, missingness vs the target, and what EDA decides before FE imputes.',
+      readTime: '18 min',
+      component: MissingValuesDeepDive,
+    },
+    {
+      id: 'finding-relationships',
+      title: 'Finding Relationships',
+      description:
+        'Feature vs target and feature vs feature — rates, scatter, correlation limits, slices, and suspiciously perfect scores.',
+      readTime: '18 min',
+      component: FindingRelationships,
     },
     {
       id: 'leakage-duplicates-and-splits',
       title: 'Leakage, Duplicates & Splits',
       description:
-        'The clock test, duplicate keys, a column with AUROC 1.0, and which split the data note should demand.',
-      readTime: '16 min',
+        'Freeze-time test, duplicates, group and time splits, train-only exploration — the safety net before feature engineering.',
+      readTime: '20 min',
       component: LeakageDuplicatesAndSplits,
+    },
+    {
+      id: 'eda-case-studies',
+      title: 'EDA Case Studies',
+      description:
+        'Six tiny messy tables (12–15 rows): classify types, read distributions, map nulls/sentinels, and write a data note before modelling.',
+      readTime: '35 min',
+      component: EdaCaseStudies,
     },
   ],
 }

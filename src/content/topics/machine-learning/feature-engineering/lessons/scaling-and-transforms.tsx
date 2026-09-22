@@ -3,6 +3,7 @@ import {
   ContentStep,
   Definition,
   Example,
+  Flowchart,
   KeyTakeaways,
   LessonArticle,
   LessonSection,
@@ -11,113 +12,192 @@ import {
 export function ScalingAndTransforms() {
   return (
     <LessonArticle>
-      <Definition term="Numeric transforms">
+      <Callout variant="beginner" title="Numbers on different yardsticks">
+        Age in years and income in rupees should not fight inside a distance-based or
+        coefficient-based model without scaling. Skewed money columns often need a log before that.
+        Trees mostly shrug — they split on thresholds, not distances.
+      </Callout>
+
+      <Definition term="Scaling">
         <p>
-          Change the units or the shape of a number so the algorithm’s assumptions match the
-          column: comparable ranges (scaling) or less-skewed tails (logs). This is for the
-          model, not for the human — you can always invert a log to report rupees.
+          Scaling rescales numeric features so their magnitudes are comparable (e.g. mean 0, variance
+          1). It does not change rank order. <strong className="text-white">Fit the scaler on
+          train</strong>; apply the same center/scale to every future row.
         </p>
       </Definition>
 
-      <LessonSection title="Scaling — who actually needs it">
+      <LessonSection title="Who needs scaling?">
         <div className="overflow-x-auto rounded-xl border border-surface-600">
           <table className="w-full text-sm text-slate-300">
             <thead>
               <tr className="border-b border-surface-600 bg-surface-800 text-left text-xs uppercase tracking-wider text-slate-400">
-                <th className="px-4 py-3">Needs scaled numerics</th>
-                <th className="px-4 py-3">Mostly invariant</th>
+                <th className="px-4 py-3">Model family</th>
+                <th className="px-4 py-3">Scale?</th>
+                <th className="px-4 py-3">Why</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-surface-600">
               {[
-                ['k-NN, k-means, SVM (RBF), PCA, GD-trained nets', 'Trees, forests, boosting (split on order)'],
-                ['Ridge / Lasso (penalty treats units as importance)', 'Count features you want as counts (sometimes)'],
-                ['Distance-based anything', 'Monotone transforms still change trees a little via binning, but scale itself does not'],
-              ].map(([need, inv]) => (
-                <tr key={need}>
-                  <td className="px-4 py-3 text-slate-300">{need}</td>
-                  <td className="px-4 py-3 text-slate-400">{inv}</td>
+                ['kNN, SVM (RBF), k-means', 'Yes', 'Distances dominate'],
+                ['Linear / logistic + regularisation', 'Yes (usually)', 'Penalty treats big-unit columns as “large coeffs”'],
+                ['Neural nets (tabular)', 'Yes', 'Optimisers like comparable scales'],
+                ['Decision trees, RF, boosting', 'Usually no', 'Splits are scale-invariant'],
+                ['Naive Bayes (Gaussian)', 'Not critical', 'Fits its own per-feature variance'],
+              ].map(([m, s, w]) => (
+                <tr key={m}>
+                  <td className="px-4 py-3 font-semibold text-white">{m}</td>
+                  <td className="px-4 py-3 text-emerald-400/90">{s}</td>
+                  <td className="px-4 py-3 text-slate-400">{w}</td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
-        <div className="mt-3 rounded-xl border border-surface-600 bg-surface-900 p-4 font-mono text-sm text-slate-200">
-          <div>Standardise:  (x − μ_train) / σ_train     zero mean, unit variance</div>
-          <div>Min-max:      (x − min) / (max − min)      to [0, 1]; fragile to tails</div>
-          <div>Robust:       (x − median) / IQR           quieter on outliers</div>
-        </div>
+        <Flowchart
+          title="Scale or not"
+          chart={`flowchart TD
+  A[Model type?] -->|Tree / boosting| B[Skip scaling]
+  A -->|Linear / kNN / SVM / NN| C[Scale numerics]
+  C --> D[Fit scaler on train]
+  D --> E[Transform all splits]`}
+        />
       </LessonSection>
 
-      <LessonSection title="Shape transforms — make a line less wrong">
-        <p className="text-slate-300">
-          Right-skewed money and counts: log1p(x) = log(1 + x) (safe at 0). Multiplicative
-          effects become additive — the residual U from EDA often flattens. Box–Cox / Yeo–Johnson
-          pick a power; you still fit λ on train.
-        </p>
-        <Callout variant="beginner" title="log1p on the target">
-          Predicting log(price) then exponentiating is a different model (geometric errors).
-          Report RMSE on the rupee scale if that is the business unit — the metrics lesson
-          already warned about this.
+      <LessonSection title="Common scalers — pick with intent">
+        <ContentStep number={1} title="StandardScaler (z-score)">
+          <p>
+            <code className="text-slate-200">(x − μ) / σ</code>. Default for many linear models.
+            Sensitive to extreme outliers — winsorise or log first if tails are wild.
+          </p>
+        </ContentStep>
+        <ContentStep number={2} title="MinMaxScaler">
+          <p>
+            Maps train range to [0, 1]. Compresses everything into a box; a more extreme test value
+            will fall outside [0, 1] — that is OK if you allow it, or clip.
+          </p>
+        </ContentStep>
+        <ContentStep number={3} title="RobustScaler">
+          <p>
+            Uses median and IQR. Better when outliers remain after cleaning.
+          </p>
+        </ContentStep>
+        <ContentStep number={4} title="MaxAbsScaler">
+          <p>Good for sparse data already centered near 0 (e.g. some text / count features).</p>
+        </ContentStep>
+        <Callout variant="tip" title="Never scale the target for trees; for linear regression…">
+          Scaling y is optional. If you standardize y, remember to invert predictions before
+          reporting rupees. Logging y is a transform of the target — invert with expm1 when you
+          logged with log1p.
         </Callout>
       </LessonSection>
 
+      <LessonSection title="Shape transforms — fix skew before (or instead of) worrying about μ">
+        <ContentStep number={1} title="log1p">
+          <p>
+            <code className="text-slate-200">log(1 + x)</code> for nonnegative right-skewed columns
+            (spend, dwell time, counts). Prefer log1p over log so zeros survive.
+          </p>
+        </ContentStep>
+        <ContentStep number={2} title="sqrt / cbrt">
+          <p>Milder than log; sometimes enough for count data.</p>
+        </ContentStep>
+        <ContentStep number={3} title="Box–Cox / Yeo–Johnson">
+          <p>
+            Power transforms that estimate a parameter on train. Yeo–Johnson allows zeros and
+            negatives. Still: fit on train only; nest inside the pipeline.
+          </p>
+        </ContentStep>
+        <ContentStep number={4} title="Quantile / rank transforms">
+          <p>
+            Map to a uniform or Gaussian marginal. Strong medicine — can help linear models, can
+            destroy interpretable units. Use when EDA shows pathological shapes and you care about
+            predictive score more than coefficient stories.
+          </p>
+        </ContentStep>
+        <Callout variant="beginner" title="log1p on the target">
+          If you train on <code className="text-slate-200">log1p(price)</code>, a prediction of 15.2
+          is not rupees — report <code className="text-slate-200">expm1(15.2)</code>. Evaluate
+          business metrics on the original scale.
+        </Callout>
+      </LessonSection>
+
+      <LessonSection title="Order of operations">
+        <p className="text-slate-300">
+          A robust recipe for linear models: fix sentinels → impute → (optional winsorise) → log1p
+          skewed columns → scale. Trees: often stop after impute (and indicators). Putting the
+          scaler before a one-hot block is fine; do not scale one-hot 0/1 columns unless you have a
+          reason (usually leave them).
+        </p>
+      </LessonSection>
+
       <LessonSection title="Worked problems">
-        <ContentStep number={1} title="Problem 1 — Who wins without scaling?">
-          <p>k-NN on age (20–80) and income (20 000–2 000 000). What happens?</p>
+        <ContentStep number={1} title="Problem 1 — kNN without scaling">
+          <p>Features: age ~ 30 and income ~ 500000. What does kNN effectively use?</p>
           <div className="mt-2 rounded-xl border border-surface-600 bg-surface-900 p-4 font-mono text-sm text-slate-200">
-            <div>Income owns every distance. Standardise both, or k-NN is an income-only model.</div>
+            <div>Mostly income — distances are dominated by the huge unit. Scale both.</div>
           </div>
         </ContentStep>
-        <ContentStep number={2} title="Problem 2 — Ridge units">
-          <p>You Ridge-penalise raw θ. x₁ is rupees, x₂ is rooms. Who gets crushed?</p>
+        <ContentStep number={2} title="Problem 2 — Fit μ, σ">
+          <p>Train x: 10, 20, 30. Test x: 50. StandardScaler value for the test row?</p>
           <div className="mt-2 rounded-xl border border-surface-600 bg-surface-900 p-4 font-mono text-sm text-slate-200">
-            <div>Rooms — θ₂ is large. Scale first so λ is fair. (You already saw this in regularisation.)</div>
+            <div>μ=20, σ≈8.16 → (50−20)/8.16 ≈ 3.67 (using sample std as sklearn does with ddof=0: σ≈8.165).</div>
           </div>
         </ContentStep>
-        <ContentStep number={3} title="Problem 3 — log1p">
-          <p>counts = 0, 1, 99. log1p?</p>
+        <ContentStep number={3} title="Problem 3 — Tree">
+          <p>Random forest on raw sqft and price as features for churn. Scale?</p>
           <div className="mt-2 rounded-xl border border-surface-600 bg-surface-900 p-4 font-mono text-sm text-slate-200">
-            <div>0, 0.693, 4.605. log(0) would have been −∞.</div>
+            <div>Optional / skip. Splits do not care about units.</div>
           </div>
         </ContentStep>
-        <ContentStep number={4} title="Problem 4 — Min-max trap">
-          <p>Train max spend = 8 000. Test has 90 000. Min-max to [0, 1] using train max?</p>
+        <ContentStep number={4} title="Problem 4 — Invert log">
+          <p>Model predicts log1p(y) = 2.0. What is y on the original scale?</p>
           <div className="mt-2 rounded-xl border border-surface-600 bg-surface-900 p-4 font-mono text-sm text-slate-200">
-            <div>Test maps to 11.25 — off the train interval. Robust scale or clip-then-scale.</div>
+            <div>expm1(2.0) ≈ 6.39</div>
           </div>
         </ContentStep>
-        <ContentStep number={5} title="Problem 5 — Trees and logs">
-          <p>Must you log income before XGBoost?</p>
+        <ContentStep number={5} title="Problem 5 — MinMax leak">
+          <p>You fit MinMax on the full dataset then split. Name the bug.</p>
           <div className="mt-2 rounded-xl border border-surface-600 bg-surface-900 p-4 font-mono text-sm text-slate-200">
-            <div>Not for scale. Sometimes yes for a nicer leaf mean if you predict log y, or if you later blend with a linear model.</div>
+            <div>Test min/max leaked into train scaling. Fit MinMax on train only.</div>
+          </div>
+        </ContentStep>
+        <ContentStep number={6} title="Problem 6 — log of negatives">
+          <p>profit can be −500. Can you log1p(profit)?</p>
+          <div className="mt-2 rounded-xl border border-surface-600 bg-surface-900 p-4 font-mono text-sm text-slate-200">
+            <div>No — log1p needs x &gt; −1 and is meant for nonnegative. Use Yeo–Johnson, sign*log1p(abs), or shift with care.</div>
           </div>
         </ContentStep>
       </LessonSection>
 
-      <LessonSection title="Python — fit scaler on train">
+      <LessonSection title="Python — log1p then StandardScaler">
         <Example
-          title="Standardise and log1p"
-          output={`train z-age μ,σ used: 31.0  7.8
-test z-age: [-1.15  0.51]
-log1p counts: [0.    0.693 4.605]`}
+          title="Train-fitted transform chain"
+          output={`train scaled spend: roughly mean 0
+test scaled spend (raw 900 → log1p then z): one value`}
         >{`import numpy as np
+import pandas as pd
+from sklearn.preprocessing import StandardScaler
 
-age_tr = np.array([22.0, 30.0, 41.0])
-age_te = np.array([22.0, 35.0])
-mu, sig = age_tr.mean(), age_tr.std(ddof=0)
-print(f"train z-age μ,σ used: {mu:.1f}  {sig:.1f}")
-print("test z-age:", np.round((age_te - mu) / sig, 2))
-print("log1p counts:", np.round(np.log1p([0, 1, 99]), 3))`}</Example>
+train = pd.DataFrame({"spend": [40.0, 80.0, 120.0, 400.0]})
+test = pd.DataFrame({"spend": [90.0, 900.0]})
+
+train_l = np.log1p(train[["spend"]])
+test_l = np.log1p(test[["spend"]])
+scaler = StandardScaler()
+train_s = scaler.fit_transform(train_l)
+test_s = scaler.transform(test_l)
+print("train mean after scale:", train_s.mean().round(3))
+print("test scaled:", test_s.round(3).ravel())`}</Example>
       </LessonSection>
 
       <KeyTakeaways
         items={[
-          'Scale when the algorithm uses distances, penalties, or gradient steps that treat raw units as importance. Trees mostly do not care.',
-          'Standardise is the default. Min-max is fragile to tails. Robust uses median/IQR.',
-          'Fit μ, σ, min, max, λ_BoxCox on train only. Apply the same numbers at serving time.',
-          'log1p flattens positive skew and turns 0 into 0. Use it on money and counts before linear models and k-means.',
-          'If the business metric is in rupees, evaluate in rupees even if you trained on log y.',
+          'Scale when the model uses distances or regularised coefficients; trees usually skip it.',
+          'Fit μ/σ, min/max, or IQR on train only — then transform everything else.',
+          'log1p is the workhorse for nonnegative right-skew; invert with expm1 for reporting.',
+          'RobustScaler helps when outliers remain; Yeo–Johnson helps when values can be ≤ 0.',
+          'Typical linear recipe: impute → winsorise/log → scale. Do not mindlessly scale one-hots.',
+          'If you transform y, evaluate and report on the original scale after inverting.',
         ]}
       />
     </LessonArticle>

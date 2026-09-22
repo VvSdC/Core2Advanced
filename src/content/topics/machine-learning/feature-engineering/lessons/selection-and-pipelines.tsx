@@ -12,12 +12,26 @@ import {
 export function SelectionAndPipelines() {
   return (
     <LessonArticle>
-      <Definition term="Selection and pipelines">
+      <Callout variant="beginner" title="Too many columns → pick; then glue every step">
+        Selection drops or down-weights useless features. A pipeline is the single object that
+        remembers every FE step you fitted — so validation and production cannot drift from training.
+      </Callout>
+
+      <Definition term="Feature selection">
         <p>
-          After you invent columns, you still have to <strong className="text-white">choose
-          and apply</strong> them the same way in CV and in production. Feature selection
-          picks a subset. A pipeline is the object that fits every step on train and
-          transforms val / test / live rows with those fitted pieces.
+          Choosing a subset (or weighted set) of features to feed the model — to fight noise,
+          multicollinearity, cost, and overfitting —{' '}
+          <strong className="text-white">nested inside cross-validation</strong> so the choice does
+          not peek at the test fold.
+        </p>
+      </Definition>
+
+      <Definition term="Pipeline">
+        <p>
+          An ordered chain: transforms → (optional selection) → estimator.{" "}
+          <code className="text-slate-200">fit</code> on train learns all parameters;{" "}
+          <code className="text-slate-200">predict</code> / <code className="text-slate-200">transform</code>{" "}
+          applies the frozen recipe.
         </p>
       </Definition>
 
@@ -27,118 +41,173 @@ export function SelectionAndPipelines() {
             <thead>
               <tr className="border-b border-surface-600 bg-surface-800 text-left text-xs uppercase tracking-wider text-slate-400">
                 <th className="px-4 py-3">Family</th>
-                <th className="px-4 py-3">How</th>
-                <th className="px-4 py-3">Catch</th>
+                <th className="px-4 py-3">Idea</th>
+                <th className="px-4 py-3">Examples</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-surface-600">
               {[
-                ['Filter', 'Score each column vs y (corr, MI, χ²) and keep the top k', 'Ignores interactions; cheap'],
-                ['Wrapper', 'Add/drop columns by CV score (RFE, forward select)', 'Expensive; overfits the CV if you search too hard'],
-                ['Embedded', 'The model zeros weights (Lasso) or ranks splits (trees)', 'Tied to that model family'],
-              ].map(([f, how, c]) => (
+                ['Filter', 'Score features without the final model', 'Variance threshold, corr with y, mutual information, χ²'],
+                ['Wrapper', 'Search subsets with model scores', 'Recursive feature elimination (RFE), forward select'],
+                ['Embedded', 'Model picks while training', 'L1 (lasso), tree importances, Elastic Net'],
+              ].map(([f, idea, ex]) => (
                 <tr key={f}>
                   <td className="px-4 py-3 font-semibold text-white">{f}</td>
-                  <td className="px-4 py-3 text-slate-400">{how}</td>
-                  <td className="px-4 py-3 text-slate-400">{c}</td>
+                  <td className="px-4 py-3 text-slate-400">{idea}</td>
+                  <td className="px-4 py-3 text-slate-400">{ex}</td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
         <Callout variant="insight" title="SelectKBest on all rows is leakage">
-          Ranking features with y on the full dataset, then CV, lets every fold see which
-          columns won using the val labels. Put selection inside the pipeline so each fold
-          ranks on its own train piece.
+          If you rank features using the full dataset (including test) then train, you peeked.
+          Put selection inside the CV pipeline so each fold refits the ranking on its train piece only.
         </Callout>
       </LessonSection>
 
-      <LessonSection title="The pipeline is the model">
+      <LessonSection title="Practical selection hygiene">
+        <ContentStep number={1} title="Drop obvious junk first">
+          <p>Constants, duplicate columns, pure IDs, leakage columns from the data note.</p>
+        </ContentStep>
+        <ContentStep number={2} title="Correlation twins">
+          <p>
+            If two numerics correlate at 0.99, keep one (domain pick) before trusting L1 to break the
+            tie randomly.
+          </p>
+        </ContentStep>
+        <ContentStep number={3} title="Importance ≠ causality">
+          <p>
+            Tree importance and permutation importance are useful ranking tools — still validate on
+            a holdout. Permutation importance is usually more trustworthy than impurity importance.
+          </p>
+        </ContentStep>
+        <ContentStep number={4} title="Cost-aware selection">
+          <p>
+            Prefer a slightly weaker feature that is free at serve time over a strong one that needs
+            a 30-minute batch join you do not have in the API.
+          </p>
+        </ContentStep>
+      </LessonSection>
+
+      <LessonSection title="Pipelines — the deployable FE object">
         <Flowchart
-          title="What gets fit on a train fold"
+          title="A typical sklearn-style pipeline"
           chart={`flowchart LR
-  A[Impute] --> B[Encode]
-  B --> C[Scale]
-  C --> D[Select]
-  D --> E[Estimator]`}
+  A[Raw columns] --> B[ColumnTransformer]
+  B --> C[impute / scale / one-hot]
+  C --> D[Optional SelectKBest]
+  D --> E[Estimator]
+  E --> F[predict]`}
         />
         <p className="mt-3 text-slate-300">
-          sklearn’s <code className="text-slate-200">Pipeline</code> +{' '}
-          <code className="text-slate-200">ColumnTransformer</code> (numeric vs categorical
-          branches) is how you stop applying the test-set median by accident. At serve time
-          you load the same fitted pipeline — not a notebook you re-run by hand.
+          <code className="text-slate-200">ColumnTransformer</code> applies different recipes to
+          numeric vs categorical columns. The whole Pipeline is what you{" "}
+          <code className="text-slate-200">joblib.dump</code> and load in the API.
         </p>
+        <Callout variant="tip" title="Why not a notebook of cells?">
+          Cell 3&rsquo;s median and cell 7&rsquo;s encoder drift from the Flask service&rsquo;s copy-paste.
+          One fitted pipeline eliminates train/serve skew from forgotten steps.
+        </Callout>
+      </LessonSection>
+
+      <LessonSection title="Advanced — nesting and custom steps">
+        <ul className="list-disc space-y-2 pl-5 text-slate-300">
+          <li>
+            <strong className="text-white">CV nests everything:</strong> impute + encode + select +
+            model hyperparameters refit per fold.
+          </li>
+          <li>
+            <strong className="text-white">Custom transformers:</strong> wrap domain logic (sentinel
+            cleanup, ratio features) in a class with fit/transform so it joins the pipeline.
+          </li>
+          <li>
+            <strong className="text-white">FeatureUnion:</strong> run parallel branches (e.g. text TF-IDF
+            + numeric pipe) and concatenate.
+          </li>
+        </ul>
       </LessonSection>
 
       <LessonSection title="Worked problems">
-        <ContentStep number={1} title="Problem 1 — Filter vs the U">
-          <p>You keep the top 5 Pearson columns. age vs cost is a U, |ρ| ≈ 0. Drop age?</p>
+        <ContentStep number={1} title="Problem 1 — Variance threshold">
+          <p>A column is 1 for every train row. Keep it?</p>
           <div className="mt-2 rounded-xl border border-surface-600 bg-surface-900 p-4 font-mono text-sm text-slate-200">
-            <div>Filter just dropped the real signal. Use MI, or a plot, or a wrapper with a model that can bend.</div>
+            <div>Drop — zero variance, no signal. Watch production if a new value appears later.</div>
           </div>
         </ContentStep>
-        <ContentStep number={2} title="Problem 2 — Select then CV">
-          <p>You SelectKBest(X, y) on all 10 000 rows, then 5-fold a logistic. Honest?</p>
+        <ContentStep number={2} title="Problem 2 — Nested selection">
+          <p>You run SelectKBest on all of X_train_full, pick 20 cols, then do CV only for the model. Honest?</p>
           <div className="mt-2 rounded-xl border border-surface-600 bg-surface-900 p-4 font-mono text-sm text-slate-200">
-            <div>No. Selection saw every label. Nested: select inside each train fold.</div>
+            <div>Optimistic. Selection saw all training labels. Put SelectKBest inside each CV fold.</div>
           </div>
         </ContentStep>
-        <ContentStep number={3} title="Problem 3 — Two branches">
-          <p>age needs a median + scaler; city needs “other” + one-hot. One StandardScaler on the whole frame?</p>
+        <ContentStep number={3} title="Problem 3 — What to pickle">
+          <p>API receives raw city strings. Do you pickle the logistic regression alone?</p>
           <div className="mt-2 rounded-xl border border-surface-600 bg-surface-900 p-4 font-mono text-sm text-slate-200">
-            <div>No — you would scale dummy 0/1 as if they were z-scores of age. ColumnTransformer: numeric vs categorical pipes.</div>
+            <div>No — pickle the full Pipeline (encoder + scaler + model) so raw rows transform correctly.</div>
           </div>
         </ContentStep>
-        <ContentStep number={4} title="Problem 4 — Production">
-          <p>You ship a pickle of the logistic θ only. New city appears. What fails?</p>
+        <ContentStep number={4} title="Problem 4 — L1">
+          <p>Lasso zeros 40 of 50 coefficients. Is selection “done”?</p>
           <div className="mt-2 rounded-xl border border-surface-600 bg-surface-900 p-4 font-mono text-sm text-slate-200">
-            <div>The dummy columns will not line up. Ship the fitted pipeline (encoder vocab + scaler + model).</div>
+            <div>Embedded selection happened — still check stability across folds and domain sense of survivors.</div>
           </div>
         </ContentStep>
-        <ContentStep number={5} title="Problem 5 — Lasso as selection (ML flavour)">
-          <p>Lasso zeros 40 of 60 columns on train. You drop them, then refit Ridge on the same train. Extra cheat?</p>
+        <ContentStep number={5} title="Problem 5 — Twin columns">
+          <p>temp_c and temp_f both present. Selection keeps both with tiny coeffs. Better FE?</p>
           <div className="mt-2 rounded-xl border border-surface-600 bg-surface-900 p-4 font-mono text-sm text-slate-200">
-            <div>Mild: the kept set was chosen with those labels. Prefer Lasso-inside-CV, or accept Lasso as the final model.</div>
+            <div>Drop one deliberately before modelling.</div>
+          </div>
+        </ContentStep>
+        <ContentStep number={6} title="Problem 6 — Serve-time cost">
+          <p>Permutation importance loves a feature that needs a 2-hour warehouse query. Ship it?</p>
+          <div className="mt-2 rounded-xl border border-surface-600 bg-surface-900 p-4 font-mono text-sm text-slate-200">
+            <div>Only if latency/cost allows. Otherwise prefer a weaker real-time proxy — document the tradeoff.</div>
           </div>
         </ContentStep>
       </LessonSection>
 
-      <LessonSection title="Python — a pipeline-shaped sketch">
+      <LessonSection title="Python — ColumnTransformer + Pipeline sketch">
         <Example
-          title="Numeric median+scale and a one-hot, fit on train"
-          output={`train X shape (3, 4)
-test  X shape (2, 4)
-columns aligned: True`}
-        >{`import pandas as pd
-from sklearn.compose import ColumnTransformer
+          title="Numeric impute+scale; categorical one-hot; logistic"
+          output={`pipeline steps: prep → clf
+CV would wrap this whole pipe`}
+        >{`from sklearn.compose import ColumnTransformer
 from sklearn.impute import SimpleImputer
+from sklearn.linear_model import LogisticRegression
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
 
-train = pd.DataFrame({"age": [22, None, 41], "city": ["HYD", "BLR", "HYD"]})
-test = pd.DataFrame({"age": [35, None], "city": ["PUNE", "HYD"]})
+num = ["age", "spend"]
+cat = ["plan"]
 
-pipe = ColumnTransformer([
+prep = ColumnTransformer([
     ("num", Pipeline([
         ("imp", SimpleImputer(strategy="median")),
         ("sc", StandardScaler()),
-    ]), ["age"]),
-    ("cat", OneHotEncoder(handle_unknown="ignore"), ["city"]),
+    ]), num),
+    ("cat", Pipeline([
+        ("imp", SimpleImputer(strategy="most_frequent")),
+        ("oh", OneHotEncoder(handle_unknown="ignore")),
+    ]), cat),
 ])
-Xtr = pipe.fit_transform(train)
-Xte = pipe.transform(test)
-print("train X shape", Xtr.shape)
-print("test  X shape", Xte.shape)
-print("columns aligned:", Xtr.shape[1] == Xte.shape[1])`}</Example>
+
+pipe = Pipeline([
+    ("prep", prep),
+    ("clf", LogisticRegression(max_iter=1000)),
+])
+# pipe.fit(X_train, y_train); pipe.predict(X_test)
+print("pipeline steps:", [n for n, _ in pipe.steps])`}</Example>
       </LessonSection>
 
       <KeyTakeaways
         items={[
-          'Filter, wrapper, embedded: cheap scores vs CV search vs “the model zeros it.” Filters miss U-shapes; wrappers can overfit the search.',
-          'Any selection that uses y must live inside each CV train fold — never SelectKBest on the whole table first.',
-          'A pipeline (impute → encode → scale → select → model) is what you fit, pickle, and serve. θ alone is not deployable.',
-          'ColumnTransformer keeps numeric and categorical branches from scaling each other’s dummies.',
-          'You are now allowed to open the regression chapter: the table has a grain, a split, and a reproducible transform path.',
+          'Filter / wrapper / embedded selection all help — nest them inside CV to avoid peeking.',
+          'Drop constants, IDs, leakage, and obvious twins before fancy search.',
+          'Permutation importance beats naive impurity ranks for “what mattered”.',
+          'A Pipeline + ColumnTransformer is the unit you deploy — not a bare estimator.',
+          'Custom domain transforms belong in fit/transform classes inside the pipe.',
+          'Select for predictive value and for serve-time cost / availability.',
         ]}
       />
     </LessonArticle>
