@@ -73,15 +73,16 @@ export function PuttingItTogetherMl() {
         <Flowchart
           title="Natural next steps in this Machine Learning topic"
           chart={`flowchart TB
-  A[Introduction — you are here] --> B[Core algorithms]
-  B --> C[Linear models & trees]
-  C --> D[Evaluation metrics deep dive]
-  D --> E[Feature engineering practice]
-  E --> F[Projects with real datasets]`}
+  A[Introduction — you are here] --> B[EDA]
+  B --> C[Feature engineering]
+  C --> D[Regression then classification]
+  D --> E[Unsupervised]
+  E --> F[Model selection]`}
         />
         <Callout variant="tip" title="How to study from here">
-          Re-read any lesson that felt fuzzy — especially features/labels, supervised vs unsupervised,
-          and train/val/test. Those ideas appear in every later chapter.
+          Next is Exploratory Data Analysis, then Feature Engineering — look at the table and
+          repair it before you fit a line. Re-read features/labels and train/val/test if those
+          still feel fuzzy; every later chapter assumes them.
         </Callout>
         <Callout variant="insight" title="Mindset">
           Amazing ML practitioners are curious about the data and ruthless about evaluation. Algorithms
