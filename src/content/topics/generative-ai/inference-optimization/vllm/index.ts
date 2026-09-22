@@ -3,6 +3,7 @@ import type { SubTopic } from '../../../../types'
 import { ComparingInferenceEngines } from './lessons/comparing-inference-engines'
 import { ContinuousBatching } from './lessons/continuous-batching'
 import { DeploymentPatterns } from './lessons/deployment-patterns'
+import { DesigningAnInferenceMicroservice } from './lessons/designing-an-inference-microservice'
 import { DisaggregatedServing } from './lessons/disaggregated-serving'
 import { EngineArgumentsAndConfig } from './lessons/engine-arguments-and-config'
 import { GpusAndMemoryBasics } from './lessons/gpus-and-memory-basics'
@@ -61,6 +62,7 @@ const productionLessons = [
   { id: 'speculative-decoding', title: 'Speculative Decoding', description: 'Draft model proposes tokens, target model verifies — free speedup.', readTime: '14 min', component: SpeculativeDecoding },
   { id: 'monitoring-and-benchmarking', title: 'Monitoring & Benchmarking', description: 'Metrics, logs, and benchmarking with ShareGPT-style workloads.', readTime: '12 min', component: MonitoringAndBenchmarking },
   { id: 'deployment-patterns', title: 'Deployment Patterns', description: 'Docker, Kubernetes, load balancers, and health checks.', readTime: '14 min', component: DeploymentPatterns },
+  { id: 'designing-an-inference-microservice', title: 'Designing an Inference Microservice', description: 'Zoom out from the engine — the full reference architecture (gateway, router, guardrails, cache, observability, cost meter), the five decisions that dominate, SLOs, safe rollouts, GPU autoscaling, and who on the team owns each box.', readTime: '18 min', component: DesigningAnInferenceMicroservice },
 ]
 
 const masteryLessons = [

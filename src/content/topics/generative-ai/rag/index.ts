@@ -38,10 +38,13 @@ import { HybridSearchAndRrf } from './lessons/retrieval/hybrid-search-and-rrf'
 import { MmrAndReranking } from './lessons/retrieval/mmr-and-reranking'
 import { RetrievalOverview } from './lessons/retrieval/retrieval-overview'
 import { HandlingBadRetrieval } from './lessons/retrieval/handling-bad-retrieval'
+import { QueryRouting } from './lessons/retrieval/query-routing'
 
 // Production
 import { ScalingRagInProduction } from './lessons/production/scaling-rag-in-production'
 import { ProductionRetrospective } from './lessons/production/production-retrospective'
+import { EnterpriseIngestion } from './lessons/production/enterprise-ingestion'
+import { ConfidentialDocumentsAndRedaction } from './lessons/production/confidential-documents-and-redaction'
 
 // Evaluation
 import { EvaluationFrameworks } from './lessons/evaluation/evaluation-frameworks'
@@ -192,6 +195,7 @@ export const ragSubTopic: SubTopic = {
             { id: 'mmr-and-reranking', title: 'MMR & Reranking', description: 'Diversity-aware selection and cross-encoder precision.', readTime: '10 min', component: MmrAndReranking },
             { id: 'advanced-retrieval-strategies', title: 'Advanced Strategies', description: 'HyDE, multi-query, parent-document, query decomposition.', readTime: '10 min', component: AdvancedRetrievalStrategies },
             { id: 'handling-bad-retrieval', title: 'Handling Bad Retrieval', description: 'Similarity thresholds, metadata filtering, reranking, query rewriting, and a fallback decision tree for when chunks are irrelevant.', readTime: '12 min', component: HandlingBadRetrieval },
+            { id: 'query-routing', title: 'Query Routing', description: 'Pick the right source per query — vector store, SQL, external APIs, webhooks, or no retrieval at all. Rule-, classifier-, and tool-calling routers with the decision tree for each.', readTime: '12 min', component: QueryRouting },
           ],
         },
         {
@@ -238,7 +242,9 @@ export const ragSubTopic: SubTopic = {
           id: 'production-lessons',
           title: 'Lessons',
           lessons: [
-            { id: 'scaling-rag-in-production', title: 'Scaling RAG', description: 'Latency budgets, caching (embedding/query/answer), parallel retrieval, ANN indexing, and cutting generation cost.', readTime: '14 min', component: ScalingRagInProduction },
+            { id: 'enterprise-ingestion', title: 'Enterprise Ingestion', description: 'Connectors, format-aware parsing, metadata enrichment, CDC vs full rebuild, dedupe, versioning, delete events — the ingestion pipeline that survives real companies.', readTime: '14 min', component: EnterpriseIngestion },
+            { id: 'confidential-documents-and-redaction', title: 'Confidential Documents & Redaction', description: 'ACL-aware retrieval, multi-tenant isolation, PII detection and redaction, reversible tokenisation, and the compliance patterns (GDPR, HIPAA, data residency) that keep RAG programs alive.', readTime: '14 min', component: ConfidentialDocumentsAndRedaction },
+            { id: 'scaling-rag-in-production', title: 'Scaling & Cost', description: 'Latency budgets, caching (embedding/query/answer), parallel retrieval, ANN indexing, and a cost lens showing where the dollars actually go in a RAG bill.', readTime: '14 min', component: ScalingRagInProduction },
             { id: 'production-retrospective', title: 'What I\'d Do Differently', description: 'A build-it-again retrospective — common regrets, real bottlenecks, tradeoffs to reconsider, and a production checklist.', readTime: '12 min', component: ProductionRetrospective },
           ],
         },

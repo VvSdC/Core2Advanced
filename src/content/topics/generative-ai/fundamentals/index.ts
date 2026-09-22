@@ -11,12 +11,14 @@ import { EmbeddingsAndVectorSpace } from './lessons/embeddings-and-vector-space'
 import { TheTransformerArchitecture } from './lessons/the-transformer-architecture'
 import { SelfAttentionExplained } from './lessons/self-attention-explained'
 import { WhatAreModelParameters } from './lessons/what-are-model-parameters'
+import { TheModernLlmBlock } from './lessons/the-modern-llm-block'
 
 // The Bigger Picture
 import { HowLlmsAreTrained } from './lessons/how-llms-are-trained'
 import { ContextWindowsAndKvCache } from './lessons/context-windows-and-kv-cache'
 import { PrefillDecodeAndLatency } from './lessons/prefill-decode-and-latency'
 import { PromptCaching } from './lessons/prompt-caching'
+import { QuantizationConcepts } from './lessons/quantization-concepts'
 import { SmallLanguageModels } from './lessons/small-language-models'
 import { LargeLanguageModels } from './lessons/large-language-models'
 import { MultimodalModels } from './lessons/multimodal-models'
@@ -96,6 +98,14 @@ const insideTheModelLessons = [
     readTime: '10 min',
     component: WhatAreModelParameters,
   },
+  {
+    id: 'the-modern-llm-block',
+    title: 'The Modern LLM Block (LLaMA-style)',
+    description:
+      'How today\'s open-weight models (LLaMA, Mistral, Qwen, Gemma) upgrade the original Transformer — pre-norm RMSNorm, RoPE, SwiGLU, and Grouped-Query Attention — with a family tree showing who uses what.',
+    readTime: '14 min',
+    component: TheModernLlmBlock,
+  },
 ]
 
 const biggerPictureLessons = [
@@ -130,6 +140,14 @@ const biggerPictureLessons = [
       'Reuse the prefill KV cache across requests — why a shared prefix is the whole trick, how to structure prompts for it, and how to implement it with OpenAI, Anthropic, Gemini, and self-hosted vLLM, plus cost math, advanced patterns, and pitfalls.',
     readTime: '16 min',
     component: PromptCaching,
+  },
+  {
+    id: 'quantization-concepts',
+    title: 'Quantization: Concepts, Use Cases & Tradeoffs',
+    description:
+      'Storing model weights in fewer bits (INT8, INT4) — the memory math, the scale + block idea, PTQ vs QAT, weight-only vs W+A, popular schemes (GPTQ, AWQ, GGUF, NF4, FP8), quality tradeoffs, and a decision flowchart for what to use where.',
+    readTime: '15 min',
+    component: QuantizationConcepts,
   },
   {
     id: 'small-language-models',

@@ -1,18 +1,41 @@
 import type { Topic } from '../../types'
 import { createEmptySubTopic } from '../../create-empty-subtopic'
+import { linearAlgebraSubTopic } from './linear-algebra'
+
+const calculusSubTopic = createEmptySubTopic(
+  'calculus',
+  'Calculus',
+  'Limits, derivatives, partial derivatives, chain rule, gradients, and convex optimisation — coming soon.',
+)
+
+const probabilityAndStatisticsSubTopic = createEmptySubTopic(
+  'probability-and-statistics',
+  'Probability & Statistics',
+  'Sample spaces, Bayes, random variables, common distributions, expectation, CLT, MLE, hypothesis testing — coming soon.',
+)
+
+const discreteAndInformationTheorySubTopic = createEmptySubTopic(
+  'discrete-and-information-theory',
+  'Discrete Math & Information Theory',
+  'Sets, combinatorics, logs & exponentials, entropy, cross-entropy, KL divergence, and distance metrics — coming soon.',
+)
 
 export const mathematicsTopic: Topic = {
   id: 'mathematics',
   title: 'Mathematics',
   description:
-    'Math foundations for computing and ML — linear algebra, calculus, probability, and discrete math.',
+    'Math foundations for ML and computing — linear algebra, calculus, probability & statistics, and discrete math / information theory. Every topic pairs the concept with 3–6 worked problems and a NumPy implementation.',
   accent: 'mathematics',
-  catalog: [{ type: 'subTopic', subTopicId: 'fundamentals' }],
+  catalog: [
+    { type: 'subTopic', subTopicId: 'linear-algebra' },
+    { type: 'subTopic', subTopicId: 'calculus' },
+    { type: 'subTopic', subTopicId: 'probability-and-statistics' },
+    { type: 'subTopic', subTopicId: 'discrete-and-information-theory' },
+  ],
   subTopics: [
-    createEmptySubTopic(
-      'fundamentals',
-      'Fundamentals',
-      'Core mathematical building blocks — lessons coming soon.',
-    ),
+    linearAlgebraSubTopic,
+    calculusSubTopic,
+    probabilityAndStatisticsSubTopic,
+    discreteAndInformationTheorySubTopic,
   ],
 }

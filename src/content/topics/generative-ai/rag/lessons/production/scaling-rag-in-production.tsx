@@ -196,13 +196,64 @@ print(f"With cache:    \${with_cache:.2f}/day  ({hit_rate*100:.0f}% cheaper)")`}
         </ul>
       </LessonSection>
 
+      <LessonSection title="A cost lens — where the dollars actually go">
+        <p className="text-slate-300">
+          Every RAG bill breaks into four line items. Know the shape before you optimise.
+        </p>
+        <div className="mt-4 overflow-x-auto rounded-xl border border-surface-600">
+          <table className="w-full text-sm text-slate-300">
+            <thead>
+              <tr className="border-b border-surface-600 bg-surface-800 text-left text-xs uppercase tracking-wider text-slate-400">
+                <th className="px-4 py-3">Line item</th>
+                <th className="px-4 py-3">Rough share of bill</th>
+                <th className="px-4 py-3">Highest-leverage lever</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-surface-600">
+              {[
+                ['LLM generation (input + output tokens)', '60–85%', 'Answer cache; smaller model on easy queries; cap output tokens; prompt caching'],
+                ['Embedding calls (indexing + query embed)', '5–20%', 'Content-hash embedding cache; batch API; self-host a small embedding model'],
+                ['Vector DB (storage + QPS)', '5–15%', 'Right-size index (IVF+PQ at scale); dimension reduction; drop stale namespaces'],
+                ['Reranker', '2–8%', 'Rerank only the top 20–50; use a smaller cross-encoder; skip reranking for high-confidence hits'],
+              ].map(([item, share, lever]) => (
+                <tr key={item}>
+                  <td className="px-4 py-3 font-semibold text-white">{item}</td>
+                  <td className="px-4 py-3 text-slate-400">{share}</td>
+                  <td className="px-4 py-3 text-slate-400">{lever}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <Example
+          title="Toy math — five levers stacked"
+          output={`Baseline    : 100,000 QPD × $0.010/query = $1,000/day
++ Answer cache (30% hit, free)         -> $700/day  (-30%)
++ Route 60% of misses to a cheap model -> $427/day  (-39%)
++ Rerank top-5 not top-20, prompt cache-> $342/day  (-20%)
++ Cap output at 300 tokens             -> $290/day  (-15%)
++ Embedding cache on reindex           -> $272/day  (-6%)
+Final       : $272/day  (73% cheaper than baseline)`}
+          caption="Stacked levers compound. Almost none of the savings come from the vector DB — they come from generation."
+        >{`baseline = 100_000 * 0.010
+after = baseline
+for pct in (0.30, 0.39, 0.20, 0.15, 0.06):
+    after = after * (1 - pct)
+    print(f"-> \${after:.0f}/day")`}</Example>
+        <Callout variant="insight" title="Optimise the biggest bar first">
+          Vector-DB pricing gets all the attention because it is a line item on a bill. But almost every RAG
+          system that runs out of money runs out of money on <em>generation tokens</em>. Cut generation before
+          you tune the index.
+        </Callout>
+      </LessonSection>
+
       <KeyTakeaways
         items={[
           'Measure the latency budget per stage first — generation usually dominates, so stream it and optimise it first.',
           'Caching is the biggest win: embedding cache (skip re-embedding), query/semantic cache (skip retrieval), answer cache (skip generation).',
           'Parallelise independent work (hybrid/multi-query retrieval) for latency; batch embeddings for cheap indexing.',
           'Use ANN indexes (HNSW; IVF+PQ at huge scale) and only move to managed/distributed vector DBs when metrics demand it.',
-          'Cut generation cost by sending fewer reranked chunks, right-sizing the model, capping output tokens, and caching answers.',
+          '60–85% of a RAG bill is generation tokens — attack that first: answer cache, smaller model on easy queries, capped output, prompt caching.',
         ]}
       />
     </LessonArticle>
