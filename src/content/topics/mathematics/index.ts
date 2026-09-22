@@ -1,18 +1,8 @@
 import type { Topic } from '../../types'
 import { createEmptySubTopic } from '../../create-empty-subtopic'
+import { calculusSubTopic } from './calculus'
 import { linearAlgebraSubTopic } from './linear-algebra'
-
-const calculusSubTopic = createEmptySubTopic(
-  'calculus',
-  'Calculus',
-  'Limits, derivatives, partial derivatives, chain rule, gradients, and convex optimisation — coming soon.',
-)
-
-const probabilityAndStatisticsSubTopic = createEmptySubTopic(
-  'probability-and-statistics',
-  'Probability & Statistics',
-  'Sample spaces, Bayes, random variables, common distributions, expectation, CLT, MLE, hypothesis testing — coming soon.',
-)
+import { probabilityAndStatisticsSubTopic } from './probability-and-statistics'
 
 const discreteAndInformationTheorySubTopic = createEmptySubTopic(
   'discrete-and-information-theory',
