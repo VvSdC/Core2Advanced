@@ -164,7 +164,7 @@ export function PuttingItTogetherIam() {
           workers and custom ETL boxes; security groups (network layer) complement IAM (API layer). You
           will provision compute, attach profiles, and connect to the S3 landing zones whose bucket
           policies you can now author confidently. After EC2 the course continues deeper into S3, Lambda,
-          Glue orchestration, and end-to-end projects — every module reuses the IAM vocabulary from this
+          Glue orchestration, security, APIs, and containers — every module reuses the IAM vocabulary from this
           sub-topic.
         </p>
         <Flowchart
@@ -175,7 +175,7 @@ export function PuttingItTogetherIam() {
   EC2 --> S3[S3 — lake storage policies]
   S3 --> COMPUTE[Lambda Glue — serverless ETL]
   COMPUTE --> WH[Redshift Athena — serve]
-  WH --> PROJ[End-to-end DE project]`}
+  WH --> PROJ[Security ops APIs and containers]`}
         />
         <Callout variant="insight">
           IAM is not a one-time lesson — revisit this checkpoint when designing a new dataset onboarding

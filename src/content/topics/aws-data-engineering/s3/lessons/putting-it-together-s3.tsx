@@ -177,7 +177,7 @@ export function PuttingItTogetherS3() {
   LAM[Lambda — event handlers]
   GLUE[Glue — Spark ETL]
   ATH[Athena Redshift — serve]
-  PROJ[End-to-end DE project]
+  PROJ[Security ops APIs and containers]
   IAM --> EC2
   IAM --> S3
   S3 --> LAM

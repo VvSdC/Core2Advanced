@@ -34,7 +34,7 @@ export function GettingStartedWithAwsDe() {
         <ContentStep number={1} title="Follow the catalog order">
           <p className="text-slate-300">
             Sub-topics are arranged from fundamentals → identity (IAM) → storage and compute → ETL and
-            query services → orchestration → a capstone end-to-end project. Skipping ahead is fine only
+            query services → orchestration → security and operations → APIs and containers. Skipping ahead is fine only
             after IAM and S3 feel familiar — almost everything touches those two.
           </p>
         </ContentStep>
@@ -66,7 +66,7 @@ export function GettingStartedWithAwsDe() {
   K --> L[Step Functions]
   L --> M[Secrets & KMS]
   M --> N[CloudTrail & Systems Manager]
-  N --> O[End-to-End Project]`}
+  N --> O[API Gateway & ECS]`}
         />
       </LessonSection>
 
@@ -130,7 +130,7 @@ export function GettingStartedWithAwsDe() {
 
       <KeyTakeaways
         items={[
-          'This track moves from AWS fundamentals through IAM, storage, compute, ETL, orchestration, and an end-to-end project.',
+          'This track moves from AWS fundamentals through IAM, storage, compute, ETL, orchestration, security, APIs, and containers.',
           'Study in catalog order; read concepts before clicking in the Console; practice one service at a time.',
           'Core starter vocabulary: Region, AZ, bucket, ETL, data lake, data warehouse.',
           'After this sub-topic you will understand cloud basics, AWS infrastructure, and safe account habits.',

@@ -1,5 +1,4 @@
 import type { Topic } from '../../types'
-import { createEmptySubTopic } from '../../create-empty-subtopic'
 import { awsFundamentalsSubTopic } from './aws-fundamentals'
 import { iamSubTopic } from './iam'
 import { ec2SubTopic } from './ec2'
@@ -15,54 +14,20 @@ import { vpcSubTopic } from './vpc'
 import { eventBridgeSubTopic } from './eventbridge'
 import { cloudFormationSubTopic } from './cloudformation'
 import { dynamoDbSubTopic } from './dynamodb'
-
-const sqsSubTopic = createEmptySubTopic(
-  'sqs',
-  'Amazon SQS',
-  'Queues for decoupling producers and consumers in data pipelines.',
-)
-
-const stepFunctionsSubTopic = createEmptySubTopic(
-  'step-functions',
-  'Step Functions',
-  'Orchestrate Lambda, Glue, and retries into production workflows.',
-)
-
-const secretsSubTopic = createEmptySubTopic(
-  'secrets-and-parameters',
-  'Secrets Manager & Parameter Store',
-  'Secure credentials and config for jobs, Lambda, and databases.',
-)
-
-const kmsSubTopic = createEmptySubTopic(
-  'kms',
-  'AWS KMS',
-  'Encryption keys, policies, and protecting data at rest across services.',
-)
-
-const cloudTrailSubTopic = createEmptySubTopic(
-  'cloudtrail',
-  'CloudTrail',
-  'API audit trails for security, compliance, and change forensics.',
-)
-
-const systemsManagerSubTopic = createEmptySubTopic(
-  'systems-manager',
-  'Systems Manager',
-  'Session Manager, Run Command, and operational control of fleets.',
-)
-
-const endToEndSubTopic = createEmptySubTopic(
-  'end-to-end-project',
-  'End-to-End Project',
-  'Full DE architecture, security, ops, IaC, and interview prep.',
-)
+import { sqsSubTopic } from './sqs'
+import { stepFunctionsSubTopic } from './step-functions'
+import { secretsAndParametersSubTopic } from './secrets-and-parameters'
+import { kmsSubTopic } from './kms'
+import { cloudTrailSubTopic } from './cloudtrail'
+import { systemsManagerSubTopic } from './systems-manager'
+import { apiGatewaySubTopic } from './api-gateway'
+import { ecsSubTopic } from './ecs'
 
 export const awsDataEngineeringTopic: Topic = {
   id: 'aws-data-engineering',
   title: 'AWS Data Engineering',
   description:
-    'Beginner to production — AWS fundamentals through Glue, lakes, warehouses, and end-to-end pipelines.',
+    'Beginner to production — AWS fundamentals through Glue, lakes, warehouses, orchestration, security, APIs, and containers.',
   accent: 'aws-data-engineering',
   catalog: [
     { type: 'subTopic', subTopicId: 'aws-fundamentals' },
@@ -86,7 +51,8 @@ export const awsDataEngineeringTopic: Topic = {
     { type: 'subTopic', subTopicId: 'kms' },
     { type: 'subTopic', subTopicId: 'cloudtrail' },
     { type: 'subTopic', subTopicId: 'systems-manager' },
-    { type: 'subTopic', subTopicId: 'end-to-end-project' },
+    { type: 'subTopic', subTopicId: 'api-gateway' },
+    { type: 'subTopic', subTopicId: 'ecs' },
   ],
   subTopics: [
     awsFundamentalsSubTopic,
@@ -106,10 +72,11 @@ export const awsDataEngineeringTopic: Topic = {
     dynamoDbSubTopic,
     sqsSubTopic,
     stepFunctionsSubTopic,
-    secretsSubTopic,
+    secretsAndParametersSubTopic,
     kmsSubTopic,
     cloudTrailSubTopic,
     systemsManagerSubTopic,
-    endToEndSubTopic,
+    apiGatewaySubTopic,
+    ecsSubTopic,
   ],
 }
